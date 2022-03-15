@@ -1,0 +1,21 @@
+<div [hidden]='!isAdmin' class="tab-content mt-3" id="myTabContent">
+    <!-- change password  -->
+    <div class="">
+        <form #resetPasswordForm="ngForm" (ngSubmit)="onResetPassword(resetPasswordForm)">
+            <fieldset>
+                <legend>Gestion des mots de passe utilisateur</legend>
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Adresse e-mail</label>
+                    <input type="email" name="reset-password-email" required ngModel class="form-control"
+                        placeholder="Enter email (example@email.com)">
+                    <!-- <small class="form-text text-muted">We'll never share your email with anyone else.</small> -->
+                </div>
+                <button type="submit" [disabled]="resetPasswordForm.invalid" class="btn btn-primary">
+                    <i *ngIf="refreshing" class="fas fa-spinner fa-spin"></i>&nbsp;&nbsp;
+                    <span *ngIf="refreshing">Loading...</span>
+                    <span *ngIf="!refreshing">Reset Password</span>
+                </button>
+            </fieldset>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,45 @@
+<div class="card">
+<div class="container my-container">
+  <div class="row">
+    <div>
+      <div class="card" style="width: 15rem;"class="mb-10">
+        <img src="assets/Orange.jpg" class="card-img-top" alt="...">
+        </div>
+       
+    </div>
+    <div class="col-md-6">
+      <div class="card justify-content-md-center">
+        <div class="card-header text-center">
+          <h3>Se connecter</h3>
+        </div>
+                <form #loginForm="ngForm" (ngSubmit)="onLogin(loginForm.value)" autocomplete="off">
+                  
+          <div class="card-body">
+                       <div class="mb-3">
+              <input type="text" class="form-control" name="login" placeholder="Username" placeholder="login" ngModel
+                #usernameInput="ngModel" required>
+            </div>
+            <span class="help-block" style="color:red;" *ngIf="usernameInput.invalid && usernameInput.touched">Please
+              entrez le login</span>
+            <div class="mb-3">
+              <input type="password" class="form-control" name="password" placeholder="Mot de passe" ngModel
+                #passwordInput="ngModel" required>
+            </div>
+            <span class="help-block" style="color:red;" *ngIf="passwordInput.invalid && passwordInput.touched">Please
+              entrez le mot de passe</span>
+            <div class="mb-3 d-flex justify-content-between">
+              <a [routerLink]="['/inscrire']" class="btn btn-link">S'inscrire</a>
+              <button type="submit" [disabled]="loginForm.invalid || loading" name="button" class="btn btn-primary">
+                <i *ngIf="loading" class="fas fa-spinner fa-spin"></i>
+                <span *ngIf="loading">Loading...</span>
+                <!-- <span *ngIf="!loading">Se connecter</span> -->
+               <span *ngIf="!loading"><i class="fas fa-check"></i>&nbsp;Se connecter</span>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</div>

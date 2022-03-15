@@ -1,0 +1,37 @@
+<form class="form-horizontal form-material" #fichier="ngForm" (ngSubmit)="ajoutFichier()" enctype="multipart/form-data" novalidate>
+    <div class="form-group mb-1" id="addExcel">
+    <!-- <label class="col-md-12 p-0">Excel</label> -->
+    <div class="col-md- border-bottom p-0">
+        <input type="file" class="form-control p-0 border-0" (change)="onFileChange($event)" #inputFile
+        ngModel required = true>
+    </div>
+</div>
+<div class="form-group mb-4 row">
+    <div class="col-sm-6">
+        <button class="btn btn-danger" (click)="annuler()">Annuler</button>
+    </div>
+    <div class="col-sm-6">
+        <button class="btn btn-warning" [disabled]="fichier.invalid" type="submit" style="background-color: #6995e7;">Ajouter</button>
+    </div>
+</div>
+</form>
+
+<div class="card-body">
+<h4>Excel Preview</h4>
+<table class="table table-hover">
+  <thead class="table-borderless">
+      <tr>
+        <th *ngFor="let headValue of headData">
+            {{headValue}}
+          </th>
+      </tr>
+  </thead>
+  <tbody #container>
+      <tr *ngFor="let row of data">
+          <td *ngFor="let val of headData; let i =index">
+              {{row[i] || ' '}}
+          </td>
+      </tr>
+  </tbody>
+</table>
+</div>

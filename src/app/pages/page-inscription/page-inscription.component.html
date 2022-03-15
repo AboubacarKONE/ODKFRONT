@@ -1,0 +1,49 @@
+<div class="container my-container">
+    <div class="card justify-content-md-center">
+      <div class="card-header text-center">
+        <h3>S'inscrire</h3>
+      </div>
+      <form #registerForm="ngForm" (ngSubmit)="onRegisterUser(registerForm.value)">
+        <div class="card-body">
+          <div class="mb-3">
+            <input type="text" class="form-control" name ="prenom" placeholder="prenom" ngModel #prenomInput="ngModel" required>
+          </div>
+          <span class="help-block" style="color:red;" *ngIf="prenomInput.invalid && prenomInput.touched">Please
+            entrez le prenom</span>
+          <div class="mb-3">
+            <input type="text" class="form-control" name="nom" placeholder="nom" ngModel #nomInput="ngModel" required>
+          </div>
+          <span class="help-block" style="color:red;" *ngIf="nomInput.invalid && nomInput.touched">Please
+            entrez le nom</span>
+          <div class="mb-3">
+            <input type="text" class="form-control" name="login" placeholder="login" ngModel #loginInput="ngModel" required>
+          </div>
+          <span class="help-block" style="color:red;" *ngIf="loginInput.invalid && loginInput.touched">Please
+            entrez le login</span>
+          <div class="mb-3">
+            <input type="text" class="form-control" name="email" placeholder="email" ngModel #emailInput="ngModel" required>
+          </div>
+          <span class="help-block" style="color:red;" *ngIf="emailInput.invalid && emailInput.touched">Please
+            entrez l'email</span>
+          <div class="mb-3">
+          <input type="text" class="form-control" name="adresse" placeholder="adresse" ngModel #adresseInput="ngModel" required>
+          </div>
+          <span class="help-block" style="color:red;" *ngIf="adresseInput.invalid && adresseInput.touched">Please
+            entrez l'adresse</span>
+          <div class="mb-3">
+            <input type="text" class="form-control" name="telephone" placeholder="telephone" ngModel #telephoneInput="ngModel" required>
+          </div>
+          <span class="help-block" style="color:red;" *ngIf="telephoneInput.invalid && telephoneInput.touched">Please
+            entrez le numéro de téléphone</span>    
+          <div class="mb-3 d-flex justify-content-between">
+            <a [routerLink]="['/login']" class="btn btn-link">Se connecter</a>
+            <button type="submit" [disabled]="registerForm.invalid || loading" name="button" class="btn btn-primary">
+              <i *ngIf="loading" class="fas fa-spinner fa-spin"></i>
+              <span *ngIf="loading">Loading...</span>
+              <!-- <span *ngIf="!loading">Se connecter</span> -->
+             <span *ngIf="!loading"><i class="fas fa-check"></i>&nbsp;S'inscrire</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>

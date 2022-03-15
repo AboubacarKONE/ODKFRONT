@@ -1,0 +1,344 @@
+<!-- main content -->
+<div class="tab-content mt-3" id="myTabContent">
+  <!-- Administrateur table -->
+  <div class="tab-pane fade show active" id="users">
+        <div class="mb-3 float-right">
+          <div class="btn-group mr-2">
+            <!-- <form class="form-inline my-2 my-lg-0 justify-content-center">
+                        <input name="searchTerm" #searchInput="ngModel" class="form-control mr-sm-2" ngModel type="search"
+                            placeholder="Search users...">
+                    </form> -->
+            <button [hidden]='!isAdmin' type="button" class="btn btn-info" data-toggle="modal"
+              data-target="#addUserModal">
+              <i class="fa fa-plus"></i>Nouveau
+            </button>
+          </div>
+          <div class="btn-group">
+            <button type="button" (click)="getUserByPromos(true)" class="btn btn-info">
+              <i *ngIf="refreshing" class="fas fa-sync fa-spin"></i><i *ngIf="!refreshing" class="fas fa-sync"></i>
+            </button>
+          </div>
+        </div>
+        <table class="table table-hover">
+          <thead class="table-borderless">
+              <tr class="text-center">
+                  <th>Photo</th>
+                  <th>User ID</th>
+                  <th>Prenom</th>
+                  <th>Nom</th>
+                  <th>Login</th>
+                  <th>Email</th>
+                  <th>Adresse</th>
+                  <th>Telephone</th>
+                  <th>Profession</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+              </tr>
+          </thead>
+          <tbody *ngFor="let alumni of usersByPromos ">
+              <tr class="text-center">
+                  <td>
+                      <img height="40" width="40" src="{{alumni?.profileImageUrl}}"
+                          class="rounded-circle img-fluid img-thumbnail" alt="" />
+                  </td>
+                  <td (click)="onSelectUsers(alumni)">{{alumni?.userId}}</td>
+                  <td (click)="onSelectUsers(alumni)">{{alumni?.prenom}}</td>
+                  <td (click)="onSelectUsers(alumni)">{{alumni?.nom}}</td>
+                  <td (click)="onSelectUsers(alumni)">{{alumni?.login}}</td>
+                  <td (click)="onSelectUsers(alumni)">{{alumni?.email}}</td>
+                  <td (click)="onSelectUsers(alumni)">{{alumni?.adresse}}</td>
+                  <td (click)="onSelectUsers(alumni)">{{alumni?.telephone}}</td>
+                  <td (click)="onSelectUsers(alumni)">{{alumni?.profession}}</td>
+                  <td (click)="onSelectUsers(alumni)">
+                      <span [hidden]="!alumni?.active" class="badge badge-success">Active</span>
+                      <span [hidden]="alumni?.active" class="badge badge-danger">Inactive</span>
+                  </td>
+                  <td class="">
+                      <div class="btn-group">
+                          <button class="btn btn-outline-info" (click)="onEditUser(alumni)"><i class="fas fa-edit"></i></button>
+                          <button [hidden]='!isAdmin' class="btn btn-outline-danger"(click)="onDeleteUser(alumni?.login)"><i class="fas fa-trash"></i></button>
+                      </div>
+                  </td>
+              </tr>
+          </tbody>
+      </table>
+      
+  </div>
+  <button [hidden]="true" type="button" id="openUserInfo" data-toggle="modal" data-target="#viewUserModal">
+  </button>
+  <button [hidden]="true" type="button" id="openUserEdit" data-toggle="modal" data-target="#editUserModal">
+  </button>
+  <!-- info modèle administrateurs -->
+  <div class="modal fade bd-example-modal-lg" id="viewUserModal" tabindex="-1" role="dialog" aria-labelledby=""
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-center" id="exampleModalLongTitle">{{selectedUser?.prenom}}
+            {{selectedUser?.nom}}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div>
+            <div class="card">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-12 col-sm-auto">
+                    <div class="mx-auto" style="width: 120px;">
+                      <div class="d-flex justify-content-center align-items-center rounded">
+                        <img class="rounded" height="120" width="120" src="{{selectedUser?.profileImageUrl}}"
+                          alt="{{selectedUser?.prenom}}">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col d-flex flex-column flex-sm-row justify-content-between">
+                    <div class="text-center text-sm-left mb-sm-0">
+                      <h6 class="pt-sm-2 pb-1 mb-0 text-nowrap">{{selectedUser?.prenom}}
+                        {{selectedUser?.nom}}</h6>
+                      <p class="mb-1"> {{selectedUser?.login}}</p>
+                      <div class="">Status:
+                        <span [hidden]="!selectedUser?.active" class="badge badge-success">Active</span>
+                        <span [hidden]="selectedUser?.active" class="badge badge-danger">Inactive</span>
+                      </div>
+                      <div *ngIf="selectedUser?.lastLoginDateDisplay" class="text-muted">
+                        <small>Dernière connexion: {{selectedUser?.lastLoginDateDisplay | date:
+                          'medium'}} </small>
+                      </div>
+                    </div>
+                    <div class="text-center text-sm-right">
+                      <div class="text-muted"><small>rejoint: {{selectedUser?.joinDate |
+                          date:'medium'}}</small></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item"></li>
+                <li class="list-group-item"><i class="fa fa-id-badge float-right"></i>
+                  {{selectedUser?.userId}}
+                </li>
+                <li class="list-group-item"><i class="fa fa-envelope float-right"></i>{{selectedUser?.email}}
+                </li>
+                <li class="list-group-item"><i
+                    class="fas fa-shield-alt float-right"></i>{{selectedUser?.role.substring(5)}}
+                </li>
+                <li *ngIf="selectedUser?.lastLoginDateDisplay" class="list-group-item"><i
+                    class="fas fa-sign-in-alt float-right"></i>
+                  {{selectedUser?.lastLoginDateDisplay | date: 'medium'}}
+                </li>                
+                <li class="list-group-item">
+                  <span [hidden]="selectedUser?.nonLocked">
+                    <i class="fa fa-lock float-right" style="color: red;">
+                    </i>
+                    Account Locked
+                  </span>
+                  <span [hidden]="!selectedUser?.nonLocked">
+                    <i class="fa fa-unlock float-right" style="color: green;">
+                    </i>
+                    Account Unlocked
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- model ajout utilisateurs -->
+  <div [hidden]='!isAdmin' class="modal draggable fade bd-example-modal-lg" id="addUserModal" tabindex="-1"
+    role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-center">Nouveau Utilisateur</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div>
+            <form #newUserForm="ngForm" (ngSubmit)="onAddNewUser(newUserForm)">
+              <div class="form-group">
+                <label for="prenom">Prenom</label>
+                <input type="text" name="prenom" required ngModel class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="nom">Nom</label>
+                <input type="text" name="nom" required ngModel class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="login">login</label>
+                <input type="text" name="login" required ngModel class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" name="email" required ngModel class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="adresse">Adresse</label>
+                <input type="text" name="adresse" required ngModel class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="telephone">Telephone</label>
+                <input type="text" name="telephone" required ngModel class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="profession">Profession</label>
+                <input type="text" name="profession" required ngModel class="form-control">
+              </div>
+              <div *ngIf="isAdmin" class="form-group">
+                <label for="authority">Role</label>
+                <select name="role" required  value="ROLE_ALUM" ngModel="ROLE_ALUM" class="form-control">
+                  <option value="ROLE_ALUM">ALUMNI</option>
+                  <!-- <option value="ROLE_FORMATEUR">FORMATEUR</option>
+                  <option value="ROLE_ADMIN">ADMIN</option>
+                  <option value="ROLE_SUPER_ADMIN">SUPER ADMIN</option> -->
+                </select>
+              </div>
+              <!-- <div class="form-group">
+                <label for="authority">Role</label>
+                <input type="text" name="role" required ngModel="ADMIN" readonly class="form-control">
+              </div> -->
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Profile Picture </span>
+                </div>
+                <div class="custom-file">
+                  <input type="file" accept="image/*" name="profileImage"
+                    (change)="onProfileImageChange($any($event).target.files[0].name, $any($event).target.files[0])"
+                    class="custom-file-input">
+                  <label class="custom-file-label"><span [hidden]="!fileName">{{fileName}}</span>
+                    <span [hidden]="!fileName">Choose File</span>
+                  </label>
+                </div>
+              </div>
+              <fieldset class="form-group">
+                <div class="form-check">
+                  <label class="form-check-label">
+                    <input type="checkbox" name="active" ngModel class="form-check-input">
+                    Active
+                  </label>
+                </div>
+                <div class="form-check disabled">
+                  <label class="form-check-label">
+                    <input type="checkbox" name="notLocked" ngModel class="form-check-input">
+                    Unlocked
+                  </label>
+                </div>
+              </fieldset>
+              <button type="submit" style="display: none;" id="new-user-save"></button>
+            </form>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" id="new-user-close">Close</button>
+          <button type="button" (click)="saveNewUser()" [disabled]="newUserForm.invalid" class="btn btn-primary">Save
+            changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- modal edit user -->
+  <div class="modal draggable fade bd-example-modal-lg" id="editUserModal" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-center">Edit {{editeUser?.prenom}}
+            {{editeUser?.nom}} <small [hidden]="isAdmin">
+              (read only)
+            </small></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="">
+            <form #editeUserForm="ngForm">
+              <div class="form-group">
+                <label for="prenom">Prenom</label>
+                <input type="text" name="prenom" [disabled]="!isAdmin" required [(ngModel)]="editeUser.prenom"
+                  class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="nom">Nom</label>
+                <input type="text" name="nom" [disabled]="!isAdmin" required [(ngModel)]="editeUser.nom"
+                  class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="login">Login</label>
+                <input type="text" name="login" [disabled]="!isAdmin" required [(ngModel)]="editeUser.login"
+                  class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" name="email" [disabled]="!isAdmin" required [(ngModel)]="editeUser.email"
+                  class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="adresse">Adresse</label>
+                <input type="text" name="adresse" [disabled]="!isAdmin" required [(ngModel)]="editeUser.adresse"
+                  class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="telephone">Telephone</label>
+                <input type="text" name="telephone" [disabled]="!isAdmin" required [(ngModel)]="editeUser.telephone"
+                  class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="authority">Role <small [hidden]="!isAdmin">(read only)</small></label>
+                <select name="role" [disabled]="!isAdmin" required [(ngModel)]="editeUser.role" class="form-control">
+                  <option value="ROLE_ALUM">ALUMNI</option>
+                  <option value="ROLE_FORMATEUR">FORMATEUR</option>
+                  <option value="ROLE_ADMIN">ADMIN</option>
+                  <option value="ROLE_SUPER_ADMIN">SUPER ADMIN</option>
+                </select>
+              </div>
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Profile Picture </span>
+                </div>
+                <div class="custom-file">
+                  <input type="file" [disabled]="!isAdmin" accept="image/*" name="profileImage"
+                    (change)="onProfileImageChange($any($event).target.files[0].name, $any($event).target.files[0])"
+                    class="custom-file-input">
+                  <label class="custom-file-label"><span [hidden]="!fileName">{{fileName}}</span>
+                    <span [hidden]="fileName">Choose File</span>
+                  </label>
+                </div>
+              </div>
+              <fieldset class="form-group">
+                <div class="form-check">
+                  <label class="form-check-label">
+                    <input name="active" type="checkbox" [disabled]="!isAdmin" [(ngModel)]="editeUser.active"
+                      class="form-check-input">
+                    Active <small [hidden]="!isAdmin">(read only)</small>
+                  </label>
+                </div>
+                <div class="form-check disabled">
+                  <label class="form-check-label">
+                    <input name="notLocked" [disabled]="!isAdmin" type="checkbox" [(ngModel)]="editeUser.nonLocked"
+                      class="form-check-input">
+                    Unlocked <small [hidden]="!isAdmin">(read only)</small>
+                  </label>
+                </div>
+              </fieldset>
+            </form>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal"
+            id="closeEditUserModalButton">Close</button>
+          <button type="button" (click)="onUpdateUser()" [disabled]="editeUserForm.invalid || !isAdmin "
+            class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
