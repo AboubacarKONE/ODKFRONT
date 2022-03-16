@@ -17,8 +17,8 @@ export class LignePromoService {
   getLignePromotions(): Observable<lignePromotion[]> {
     return this.http.get<lignePromotion[]>(`${this.host}/odkConnect/lignePromo/lignePromos`)
   }
-  saveLignePromo(lignepromo:lignePromotion):Observable<lignePromotion>{
-    return this.http.post<lignePromotion>(`${this.host}/odkConnect/lignePromo/saveLignePromo`,lignepromo)
+  saveLignePromo(formData:FormData):Observable<lignePromotion>{
+    return this.http.post<lignePromotion>(`${this.host}/odkConnect/lignePromo/saveLignePromo`,formData)
   }
   getLignePromotionById(idLignePromo?:number):Observable<lignePromotion>{
     return this.http.get<lignePromotion>(`${this.host}/odkConnect/lignePromo/lignePromotions/${idLignePromo}`);

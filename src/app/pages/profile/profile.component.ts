@@ -68,7 +68,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }
     
   }
-  public onUpdateCurrentUser(user: User): void {   
+  public onUpdateCurrentUser(user: User): void {  
+    console.log(user.role);
+     
     this.refreshing = true;
     this.currentUsername = this.authenticationService.getUserFromLocalCache().login;
     const formData = this.userService.createUserFormData(this.currentUsername, user, this.profileImage);

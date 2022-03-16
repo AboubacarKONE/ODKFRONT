@@ -7,7 +7,7 @@
                 <!-- Inner sidebar header -->
                 <div class="inner-sidebar-header justify-content-center">
                     <button class="btn btn-info has-icon btn-block" type="button" data-toggle="modal"
-                        data-target="#threadModal">
+                        data-target="#threadModal" [hidden]="!isAdmin">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="feather feather-plus mr-2">
@@ -111,9 +111,10 @@
                                     <div class="mt-3 font-size-sm">
                                         <p>{{quiz?.description}}</p>
                                     </div>
-                                    <div class="d-flex justify-content-center align-items-center rounded"
-                                        *ngIf="quiz.photoUrl">
-                                        <img class="rounded" height="150" width="300" src="{{quiz?.photoUrl}}" alt="">
+                                    <div class=" align-items-right rounded"
+                                        *ngIf="quiz.photoUrl" height="10" width="100">
+                                        <p-image src="{{quiz?.photoUrl}}" alt="Image" width="250" [preview]="true"></p-image>
+                                        <!-- <img class="rounded" height="150" width="300" src="{{quiz?.photoUrl}}" alt=""> -->
                                     </div>
                                     <!-- <p class="text-muted"><a href="">drewdan</a> replied <span
                                             class="text-secondary font-weight-bold">13 minutes ago</span></p> -->
@@ -148,7 +149,7 @@
                         *ngFor="let response of responseForum | paginate : {itemsPerPage : 8, currentPage: pageResponse, id: 'response'}">
                         <div class="card-body">
                             <div class="media forum-item">
-                                <a href="javascript:void(0)" class="card-link">
+                                <a href="javascript:void(0)" class="card-link">                                    
                                     <img src="{{response.user?.profileImageUrl}}" class="rounded-circle" width="50"
                                         alt="User" />
                                     <!-- <small class="d-block text-center text-muted">{{response.user?.login}}</small> -->
@@ -159,10 +160,13 @@
                                     <div class="mt-3 font-size-sm">
                                         <p>{{response?.description}}</p>
                                     </div>
-                                    <div class="d-flex justify-content-center align-items-center rounded"
+                                   
+                                    <div class="align-items-center rounded"
                                         *ngIf="response.photoUrl">
-                                        <img class="rounded" height="150" width="300" src="{{response?.photoUrl}}"
-                                            alt="">
+                                        <p-image src="{{response.user?.profileImageUrl}}" alt="Image" width="250" [preview]="true"></p-image>
+                                        <!-- {{response.user?.profileImageUrl}} -->
+                                        <!-- <img class="rounded" height="150" width="300" src="{{response?.photoUrl}}"
+                                            alt=""> -->
                                     </div>
                                 </div>
                                 <div class="text-muted small text-center">
@@ -366,7 +370,7 @@
                             <form #editeResponseForm="ngForm">
                                 <div class="form-group">
                                     <label for="description">Description du question</label>
-                                    <textarea type="text" name="description" [disabled]="!isAdmin" required
+                                    <textarea type="text" name="description" required
                                     [(ngModel)]="editResponse.description" class="form-control"></textarea>
                                 </div>                                
                                 <div class="input-group mb-2">
@@ -374,7 +378,7 @@
                                         <span class="input-group-text">image question </span>
                                     </div>
                                     <div class="custom-file">
-                                        <input type="file" [disabled]="!isAdmin" accept="image/*" name="profileImage"
+                                        <input type="file"  accept="image/*" name="profileImage"
                                             (change)="onProfileImageChange($any($event).target.files[0].name, $any($event).target.files[0])"
                                             class="custom-file-input">
                                         <label class="custom-file-label"><span [hidden]="!fileName">{{fileName}}</span>

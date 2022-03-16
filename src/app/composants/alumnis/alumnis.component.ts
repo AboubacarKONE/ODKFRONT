@@ -12,6 +12,7 @@ import { LignePromoService } from './../../service/ligne-promo.service';
 import { Component, Input, OnInit, Output, EventEmitter, INJECTOR, Inject } from '@angular/core';
 import { User } from 'src/app/model/User';
 import { ActivatedRoute } from '@angular/router';
+import { lignePromotion } from 'src/app/model/lignePromotion';
 
 
 @Component({
@@ -34,9 +35,9 @@ export class AlumnisComponent implements OnInit {
   public isFormateur: boolean;
   public isSuperAdmin: boolean;
   public ligPromo = new lignePromoModel;
-  constructor(private lignePromo: LignePromoService, private notificationService: NotificationService, private promoService: PromotionService,
+  constructor(private lignePromoService: LignePromoService, private notificationService: NotificationService, private promoService: PromotionService,
     private authenticationService: AuthenticationService, private userService: UserService,
-    private activatedRoute:ActivatedRoute) { }
+    private activatedRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.getUserByPromos(true);
@@ -46,7 +47,7 @@ export class AlumnisComponent implements OnInit {
   }
   getUserByPromos(showNotification: boolean) {
     this.subscriptions.push(
-      this.lignePromo.findAllAlumByPromotionId(this.activatedRoute.snapshot.params.id).subscribe(
+      this.lignePromoService.findAllAlumByPromotionId(this.activatedRoute.snapshot.params.id).subscribe(
         (response: User[]) => {
           this.usersByPromos = response;
           if (showNotification) {
@@ -71,17 +72,33 @@ export class AlumnisComponent implements OnInit {
   public saveNewUser(): void {
     this.clickButton('new-user-save');
   }
-  public onAddNewUser(userForm: NgForm): void {
+  public onAddNewAlum(userForm: NgForm): void {
     const formData = this.userService.createUserFormData(null, userForm.value, this.profileImage);
     this.subscriptions.push(
-      this.userService.addUser(formData).subscribe(
+      this.userService.addAlumni(formData).subscribe(
         (response: User) => {
+          const formData = new FormData();
+          formData.append('idUser', JSON.stringify(response.id));
+          formData.append('idPromo', this.activatedRoute.snapshot.params.id);          
+          this.addNewLignePromotion(formData);
+          userForm.reset();
+          this.sendNotification(NotificationType.SUCCESS, `${response.prenom} ${response.nom} Ajout effectuer avec succès`)
+        },
+        (errorResponse: HttpErrorResponse) => {
+          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+          this.profileImage = null;
+        }
+      )
+    )
+  }
+  public addNewLignePromotion(formData: FormData) {
+    this.subscriptions.push(
+      this.lignePromoService.saveLignePromo(formData).subscribe(
+        (responseLignePromo: lignePromotion) => {
           this.clickButton('new-user-close');
           this.getUserByPromos(false);
           this.fileName = null;
           this.profileImage = null;
-          userForm.reset();
-          this.sendNotification(NotificationType.SUCCESS, `${response.prenom} ${response.nom} Ajout effectuer avec succès`)
         },
         (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
