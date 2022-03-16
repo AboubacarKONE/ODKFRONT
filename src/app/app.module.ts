@@ -37,6 +37,7 @@ import { GaleriephotoComponent } from './pages/galerie/galerie.component';
 import {NgxPaginationModule} from 'ngx-pagination';
 import { ExcelPromoComponent } from './pages/excel-promo/excel-promo.component';
 import {CarouselModule} from 'primeng/carousel';
+import {ImageModule} from 'primeng/image';
 
 //import { ChartsModule } from 'ng2-charts';
 @NgModule({
@@ -74,7 +75,8 @@ import {CarouselModule} from 'primeng/carousel';
     PanelModule,
     NgxPaginationModule,
     BrowserAnimationsModule,
-    CarouselModule
+    CarouselModule,
+    ImageModule
     //ChartsModule
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA],

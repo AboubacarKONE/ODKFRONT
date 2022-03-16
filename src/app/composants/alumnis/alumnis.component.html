@@ -163,7 +163,7 @@
         </div>
         <div class="modal-body">
           <div>
-            <form #newUserForm="ngForm" (ngSubmit)="onAddNewUser(newUserForm)">
+            <form #newUserForm="ngForm" (ngSubmit)="onAddNewAlum(newUserForm)">
               <div class="form-group">
                 <label for="prenom">Prenom</label>
                 <input type="text" name="prenom" required ngModel class="form-control">
@@ -293,11 +293,8 @@
               </div>
               <div class="form-group">
                 <label for="authority">Role <small [hidden]="!isAdmin">(read only)</small></label>
-                <select name="role" [disabled]="!isAdmin" required [(ngModel)]="editeUser.role" class="form-control">
-                  <option value="ROLE_ALUM">ALUMNI</option>
-                  <option value="ROLE_FORMATEUR">FORMATEUR</option>
-                  <option value="ROLE_ADMIN">ADMIN</option>
-                  <option value="ROLE_SUPER_ADMIN">SUPER ADMIN</option>
+                <select name="role" value="ROLE_ALUM" [hidden]="!isAdmin" required [(ngModel)]="editeUser.role" class="form-control">
+                  <option value="ROLE_ALUM">ALUMNI</option>                  
                 </select>
               </div>
               <div class="input-group mb-2">
