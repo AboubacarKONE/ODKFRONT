@@ -75,6 +75,9 @@ export class AuthenticationService {
   public get isFormateur(): boolean {
     return this.isAdmin || this.getUserRole() === Role.FORMATEUR;
   }
+  public get isAlumni(): boolean {
+    return this.getUserRole() === Role.ALUMNI;
+  }
   public get isAdminOrFormateur(): boolean {
     return this.isAdmin || this.isFormateur
   }

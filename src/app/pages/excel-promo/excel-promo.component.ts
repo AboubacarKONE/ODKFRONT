@@ -164,14 +164,14 @@ export class ExcelPromoComponent implements OnInit {
     this.manyPart.alumni=this.alumnis;
     //console.log("plusieurs part", this.manyPart);
    
-    this.userservice.ajoutAlumiExcel(this.alumnis).subscribe((data:any)=>{
+    this.userservice.ajoutAlumiExcel(this.alumnis).subscribe((al:any)=>{
          // window.location.reload();
-         for(let i=0; i< data.length; i++){
+         for(let i=0; i< al.length; i++){
            this.promoService.getPromotionById(this.id).subscribe((pro: any)=>{
              console.log(pro);
              
-             this.userPromo = {'user': data[i], 'promotion': pro}
-             this.userservice.addUserPromo(this.userPromo).subscribe((data:any)=>{
+             let usersPromo = {'user': al[i], 'promotion': pro}
+             this.userservice.addUserPromo(usersPromo).subscribe((pro:any)=>{
                // window.location.reload();
               
               })
@@ -179,7 +179,7 @@ export class ExcelPromoComponent implements OnInit {
           
          }
          this.sendNotification(NotificationType.SUCCESS, `liste importée avec succès`)
-         this.annuler()
+         //this.annuler()
           // this.router.navigateByUrl('promotions', {skipLocationChange: true}).then(()=>
           // this.router.navigate(['promotions'])); 
    

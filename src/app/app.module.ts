@@ -46,6 +46,7 @@ import { AlumnisComponent } from './composants/alumnis/alumnis.component';
 import { GaleriephotoComponent } from './pages/galerie/galerie.component';
 import {NgxPaginationModule} from 'ngx-pagination';
 import { ExcelPromoComponent } from './pages/excel-promo/excel-promo.component';
+import { ViewimageComponent } from './viewimage/viewimage.component';
 
 
 //import { ChartsModule } from 'ng2-charts';
@@ -68,7 +69,8 @@ import { ExcelPromoComponent } from './pages/excel-promo/excel-promo.component';
     ResetMotDePasseComponent,
     ProfileComponent,
     AlumnisComponent,
-    ExcelPromoComponent
+    ExcelPromoComponent,
+    ViewimageComponent
     
   ],
   imports: [

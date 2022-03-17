@@ -13,11 +13,15 @@ export class UserService {
   private host = environment.apiUrl;
   public search:any;
   idAlumnis: any
+  image: any;
 
   constructor(private http: HttpClient) { }
   
   setIdAlumis(data: any){this.idAlumnis = data}
   getIdAlumnis(){return this.idAlumnis}
+
+  setImage(data: any){this.image = data}
+  getImage(){return this.image}
 
   addlignepromo(userPromo: any) {
     throw new Error('Method not implemented.');

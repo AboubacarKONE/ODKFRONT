@@ -16,8 +16,8 @@
       *ngFor="let promo of promos | paginate : {itemsPerPage : 2, currentPage: pagePromo}">
       <div class="card">
         <div class="card-body" id="headingOne">
-          <button type="button" class="btn btn-info ml-auto w-auto" (click)="showExcel(promo.id)">
-            <i class=""></i>Excel
+          <button type="button" class="btn btn-info ml-auto w-auto" style="background-color: green;" (click)="showExcel(promo.id)">
+            <i>Excel</i>
           </button>
           <button class="btn btn-block text-left" type="button" [routerLink]="['/alumni',promo.id]">
 
