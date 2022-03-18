@@ -187,9 +187,9 @@ ref: DynamicDialogRef | undefined;
       )
     )
   }
-  clickButton(arg0: string) {
-    throw new Error('Method not implemented.');
-  }
+  // clickButton(arg0: string) {
+  //   throw new Error('Method not implemented.');
+  // }
   sendNotification(ERROR: NotificationType, arg1: string) {
     throw new Error('Method not implemented.');
   }
@@ -239,6 +239,8 @@ ref: DynamicDialogRef | undefined;
     this.clickButton('new-catForum-save')
   }
 
+  
+
   public onProfileImageChange(fileName: string, profileImage: File): void {
     this.fileName = fileName;
     this.profileImage = profileImage;
@@ -255,6 +257,10 @@ ref: DynamicDialogRef | undefined;
     });
     
 
+  }
+
+  private clickButton(buttonId: string): void {
+    document.getElementById(buttonId)?.click()
   }
 
 
