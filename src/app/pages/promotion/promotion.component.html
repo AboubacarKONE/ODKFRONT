@@ -37,20 +37,12 @@
                 </div>
               </div>
               <!--  details Promotion-->
-              <div class="col-md-3 custom-border-right mb-1 mt-1">
-                <div class="col">
-                  <div class="row">
+              <div class="col-md-3 custom-border-right mb-1 mt-1" >
+                <div class="col" *ngFor="let formateur of promo.lignePromotions">
+                  <div class="row"  (click)="onSelectUsers(formateur)">
                     <div class="col-md-1"><i class="fa-solid fa-user blue-color"></i></div>
-                    <div class="col-md-10"></div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-1"><i class="fa-solid fa-user blue-color"></i></div>
-                    <div class="col-md-10"></div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-1"><i class="fa-solid fa-user blue-color"></i></div>
-                    <div class="col-md-10"></div>
-                  </div>
+                    <div class="col-md-10">{{formateur?.prenom}}&nbsp;&nbsp;{{formateur.nom}}</div>
+                  </div>                  
                 </div>
               </div>
               <!--button actions-->
@@ -67,7 +59,8 @@
                     </button>
                   </div>
                   <div class="col-md-4">
-                    <button type="button" class="btn btn-link" data-toggle="modal" data-target="#affecterFormModal">
+                    <button type="button" class="btn btn-link" (click)="onGetpromoId(promo.id)" data-toggle="modal"
+                      data-target="#affecterFormModal">
                       <i class="fa-solid fa-chalkboard-user"></i>&nbsp;Affecter
                     </button>
                   </div>
@@ -75,14 +68,7 @@
               </div>
             </div>
           </button>
-        </div>
-        <!-- <div id="collapseOne{{promo.id}}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample"
-          style="max-height: 300px;
-          overflow-y: scroll">
-          <div class="card-body">
-            <app-alumnis [idPromo]="promo.id"></app-alumnis>
-          </div>
-        </div> -->
+        </div>        
       </div>
     </div>
     <pagination-controls (pageChange)=" pagePromo = $event"></pagination-controls>
@@ -140,58 +126,141 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title text-center">Nouvelle promotion</h5>
+        <h5 class="modal-title text-center">Affectation d'un formateur à la promotion</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <!-- <div>
-          <form #newPromotionForm="ngForm" (ngSubmit)="onaddNewPromotion(newPromotionForm.value)">
-            <div class="form-group">
-              <label for="libelle">libelle</label>
-              <input type="text" name="libelle" required ngModel class="form-control">
-            </div>
-            <div class="form-group">
-              <label for="dateDebut">Date debut</label>
-              <input type="date" name="dateDebut" required ngModel class="form-control">
-            </div>
-            <div class="form-group">
-              <label for="datefin">Date fin</label>
-              <input type="date" name="datefin" required ngModel class="form-control">
-            </div>            
-            <div class="input-group mb-2">
-            </div>
-            <button type="submit" style="display: none;" id="new-promo-save"></button>
-          </form>
-        </div> -->
         <div class="row mt-2 p-3 custom-border">
           <div class="form-row col-md-12">
-            <div class="col-md-4">
-              <input type="text" class="form-control" placeholder="login" [(ngModel)]="login">
-              <div class="autocomplete shadow p-3 mb-5 bg-white rounded">
-                <p class="p-1" *ngFor="let form of Formateur" 
-                   (click)="selectFormateurClick()"
-                >
-                  {{form.prenom}} {{form.nom}}
+            <div class="col-md-11">
+              <input type="text" class="form-control" placeholder="chercher un formateur" [(ngModel)]="search">
+              <div class="autocomplete shadow p-3 mb-5 bg-white rounded" *ngIf="search">
+                <p class="p-1" *ngFor="let form of Formateur | filter:search" (click)="AffecterFormateur(form)">
+                  {{form.prenom}} &nbsp;&nbsp;{{form.nom}}&nbsp;&nbsp; {{form.login}}&nbsp;&nbsp;{{form.email}} 
+
+                  <!-- <button type="button" class="btn-sm btn-info blue-color"  (click)="selectFormateurClick(form)"><i class="fas fa-plus"></i></button> -->
                 </p>
               </div>
             </div>
-            <!-- <div class="col-md-4">
-              <input type="text" class="form-control" placeholder="email" [(ngModel)]="form.email" >
-            </div> -->
-            <!-- <div class="col-md-3">
-              <input type="text" class="form-control" placeholder="telephone" >
-            </div> -->
-            <div class="col-md-1">
-              <button type="button" class="btn btn-success" (click)="ajouterLigneFormateur()"><i class="fas fa-plus"></i></button>
+          </div>
+        </div>       
+      </div>
+    </div>
+  </div>
+</div>
+<!--informations formateur-->
+<button [hidden]="true" type="button" id="openUserInfo" data-toggle="modal" data-target="#viewUserModal">
+</button>
+<div class="modal fade bd-example-modal-lg" id="viewUserModal" tabindex="-1" role="dialog" aria-labelledby=""
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-center" id="exampleModalLongTitle">{{selectedUser?.prenom}}
+            {{selectedUser?.nom}}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div>
+            <div class="card">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-12 col-sm-auto">
+                    <div class="mx-auto" style="width: 120px;">
+                      <div class="d-flex justify-content-center align-items-center rounded">
+                        <img class="rounded" height="120" width="120" src="{{selectedUser?.profileImageUrl}}"
+                          alt="{{selectedUser?.prenom}}">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col d-flex flex-column flex-sm-row justify-content-between">
+                    <div class="text-center text-sm-left mb-sm-0">
+                      <h6 class="pt-sm-2 pb-1 mb-0 text-nowrap">{{selectedUser?.prenom}}
+                        {{selectedUser?.nom}}</h6>
+                      <p class="mb-1"> {{selectedUser?.login}}</p>
+                      <div class="">Status:
+                        <span [hidden]="!selectedUser?.active" class="badge badge-success">Active</span>
+                        <span [hidden]="selectedUser?.active" class="badge badge-danger">Inactive</span>
+                      </div>
+                      <div *ngIf="selectedUser?.lastLoginDateDisplay" class="text-muted">
+                        <small>Dernière connexion: {{selectedUser?.lastLoginDateDisplay | date:
+                          'medium'}} </small>
+                      </div>
+                    </div>
+                    <div class="text-center text-sm-right">
+                      <div class="text-muted"><small>rejoint: {{selectedUser?.joinDate |
+                          date:'medium'}}</small></div>
+                    </div>                    
+                  </div>                  
+                </div>
+              </div>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item"></li>
+                <li class="list-group-item"><i class="fa fa-id-badge float-right"></i>
+                  {{selectedUser?.userId}}
+                </li>
+                <li class="list-group-item"><i class="fa fa-envelope float-right"></i>{{selectedUser?.email}}
+                </li>
+                <li class="list-group-item"><i
+                    class="fas fa-shield-alt float-right"></i>{{selectedUser?.role.substring(5)}}
+                </li>
+                <li *ngIf="selectedUser?.lastLoginDateDisplay" class="list-group-item"><i
+                    class="fas fa-sign-in-alt float-right"></i>
+                  {{selectedUser?.lastLoginDateDisplay | date: 'medium'}}
+                </li>
+                <li class="list-group-item">
+                  <span [hidden]="selectedUser?.nonLocked">
+                    <i class="fa fa-lock float-right" style="color: red;">
+                    </i>
+                    Account Locked
+                  </span>
+                  <span [hidden]="!selectedUser?.nonLocked">
+                    <i class="fa fa-unlock float-right" style="color: green;">
+                    </i>
+                    Account Unlocked
+                  </span>
+                </li>
+              </ul>
             </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-info" (click)="onGetpromoId(selectedUser.id)" data-toggle="modal" data-target="#anotherFormModal" data-dismiss="modal">reassign</button>
+        </div>
       </div>
+    </div>
+  </div>
+  <!--reaffecter un autre formateur-->
+  <div class="modal draggable fade bd-example-modal-lg" id="anotherFormModal" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-center">réaffectation d'un autre formateur à la promotion</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="new-promo-close">Close</button>
-        <button type="button" (click)="saveNewPromotion()" [disabled]="newPromotionForm.invalid"
-          class="btn btn-primary">Save</button>
+      <div class="modal-body">
+        <div class="row mt-2 p-3 custom-border">
+          <div class="form-row col-md-12">
+            <div class="col-md-11">
+              <input type="text" class="form-control" placeholder="chercher un formateur" [(ngModel)]="searchAnotherformateur">
+              <div class="autocomplete shadow p-3 mb-5 bg-white rounded" *ngIf="searchAnotherformateur">
+                <p class="p-1" *ngFor="let form of Formateur | filter:searchAnotherformateur" (click)="reassignFormateur(form)">
+                  {{form.prenom}} &nbsp;&nbsp;{{form.nom}}&nbsp;&nbsp; {{form.login}}&nbsp;&nbsp;{{form.email}} 
+
+                  <!-- <button type="button" class="btn-sm btn-info blue-color"  (click)="selectFormateurClick(form)"><i class="fas fa-plus"></i></button> -->
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>       
       </div>
     </div>
   </div>

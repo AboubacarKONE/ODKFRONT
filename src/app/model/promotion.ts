@@ -1,3 +1,4 @@
+import { User } from './User';
 import { lignePromotion } from "./lignePromotion";
 
 export interface promotion {
@@ -5,5 +6,5 @@ export interface promotion {
  libelle?:string;
  dateDebut?:Date;
  datefin?:Date
- lignePromotion?:Array<lignePromotion>;
+ lignePromotions?:User[];
 }

@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { User } from 'src/app/model/User';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NotificationType } from './../../enum/notification-type.enum';
-import { NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 

@@ -35,7 +35,7 @@ export class LignePromoService {
   findAllFormateurByPromotionId(idPromo?:number): Observable<User[]> {
     return this.http.get<User[]>(`${this.host}/odkConnect/lignePromo/Formateur/lignePromotions/${idPromo}`)
   }
-  // updateLignePromotion(idLignePromo:number,idPromo:number,idUser:number):Observable<lignePromotion>{
-  //   return this.http.post<lignePromotion>(`${this.host}/odkConnect/lignePromo/updateLignePromo/${idLignePromo}/${idPromo}/${idUser}`);
-  // }
+  updateLignePromotion(formData:FormData):Observable<lignePromotion>{
+    return this.http.put<lignePromotion>(`${this.host}/odkConnect/lignePromo/updateLignePromo`,formData);
+  }
 }

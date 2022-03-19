@@ -1,3 +1,4 @@
+import { lignePromotion } from './../../model/lignePromotion';
 import { lignePromoModel } from './../../model/lignePromoModel';
 import { LignePromoService } from './../../service/ligne-promo.service';
 import { AuthenticationService } from 'src/app/service/authentication.service';
@@ -23,16 +24,18 @@ export class PromotionComponent implements OnInit, OnDestroy {
   pagePromo: number = 1;
   idUser: number;
   login = '';
-  email='';
+  email = '';
 
-  // public idPromo:number;
+  public idPromo: number;
   public Formateurs: User[];
   // public formateur :User;
   public search;
+  public searchAnotherformateur;
   public user: User;
   public Formateur: User[];
   public promoSaved: promotion;
-  public ligPromo = new lignePromoModel;
+  public selectedUser: User;
+  // public ligPromoFormateur:promotion;
   public isAdmin: boolean;
   public isFormateur: boolean;
   private subscriptions: Subscription[] = [];
@@ -68,6 +71,13 @@ export class PromotionComponent implements OnInit, OnDestroy {
       this.promoService.getPromotions().subscribe(
         (response: promotion[]) => {
           this.promos = response;
+          this.promos.forEach(pr => {
+            this.lignePromoService.findAllFormateurByPromotionId(pr.id).subscribe(
+              (responseFormateur: User[]) => {
+                pr.lignePromotions = responseFormateur;
+                // console.log(pr.lignePromotions);
+              })
+          })
           if (showNotification) {
             this.sendNotification(NotificationType.SUCCESS, `${response.length} promotions chargés avec succès.`)
           }
@@ -78,16 +88,40 @@ export class PromotionComponent implements OnInit, OnDestroy {
       )
     );
   }
-  // filtrerFormateur(): void {
-  //   if (this.login == null) {
-  //     this.getFormateurs();
-  //   }
-  //   this.Formateur = this.Formateur.filter(art => art.login?.includes(this.login));
-  //   console.log(this.Formateur);
+  public onSelectUsers(selectedUser: User): void {
+    this.selectedUser = selectedUser;
+    console.log(this.selectedUser);    
+    this.clickButton('openUserInfo');
+  }
+  AffecterFormateur(form: User) {
     
-  // }
-  selectFormateurClick() { }
-  ajouterLigneFormateur() { }
+    const formData = new FormData();
+    formData.append('idPromo', JSON.stringify(this.idPromo));
+    formData.append('idPromo', JSON.stringify(this.idPromo));
+    formData.append('idUser', JSON.stringify(form.id));
+    
+    this.addNewLignePromotion(formData);
+  }
+  reassignFormateur(reform:User){
+    const formData = new FormData();
+    formData.append('idUser', JSON.stringify(reform.id));
+    formData.append('idPromo', JSON.stringify(this.idPromo));
+
+  }
+  public addNewLignePromotion(formData: FormData) {
+    this.subscriptions.push(
+      this.lignePromoService.saveLignePromo(formData).subscribe(
+        (responseLignePromo: lignePromotion) => {
+          this.sendNotification(NotificationType.SUCCESS, `${responseLignePromo?.user.prenom} affectés à ${responseLignePromo?.promotion.libelle} avec succès`);
+        },
+        (errorResponse: HttpErrorResponse) => {
+          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+          // this.profileImage = null;
+        }
+      )
+    )
+  }
+
   // getUserById(id:number){
   //  this.subscriptions.push(
   //   this.userService.getUsersById(id).subscribe(
@@ -110,7 +144,7 @@ export class PromotionComponent implements OnInit, OnDestroy {
         (response: promotion) => {
           this.clickButton('new-promo-close')
           this.sendNotification(NotificationType.SUCCESS, `${response.libelle} ajout effectué avec succès`)
-          this.ligPromo.promotion = response;
+          // this.ligPromo.promotion = response;
           // this.getUserById(this.idUser)
           // // this.ligPromo.user = this.formateur;
           // console.log(this.ligPromo);          
@@ -131,22 +165,28 @@ export class PromotionComponent implements OnInit, OnDestroy {
       )
     )
   }
+  onGetpromoId(id: number) {
+    this.idPromo = id;
+    console.log(this.idPromo);
+  }
   saveNewPromotion() {
     this.clickButton('new-promo-save')
   }
-  getFormateursByPromos(idPromo: number) {
-    this.subscriptions.push(
-      this.lignePromoService.findAllFormateurByPromotionId(idPromo).subscribe(
-        (response: User[]) => {
-          this.Formateurs = response;
-          console.log(this.Formateurs);
-        },
-        (errorResponse: HttpErrorResponse) => {
-          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
-        }
-      )
-    );
-  }
+  // getFormateursByPromos(idPromo: number) {
+  //   this.subscriptions.push(
+  //     this.lignePromoService.findAllFormateurByPromotionId(idPromo).subscribe(
+  //       (response: User[]) => {
+  //         this.Formateurs = response;
+  //         this.Formateurs.forEach(fr => {
+  //           // this.promos.forEach()
+  //         })
+  //       },
+  //       (errorResponse: HttpErrorResponse) => {
+  //         this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+  //       }
+  //     )
+  //   );
+  // }
   public getFormateurs(): void {
     this.subscriptions.push(
       this.userservice.getUsersByRole('ROLE_FORMATEUR').subscribe(

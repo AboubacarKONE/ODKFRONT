@@ -12,6 +12,9 @@ import { AppComponent } from './app.component';
 import { DialogModule } from "primeng/dialog";
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {CarouselModule} from 'primeng/carousel';
+import {ImageModule} from 'primeng/image';
+import { ChartsModule } from 'ng2-charts';
 import { PageLoginComponent } from './pages/page-login/page-login.component';
 import { PageInscriptionComponent } from './pages/page-inscription/page-inscription.component';
 import { PageDashboardComponent } from './pages/page-dashboard/page-dashboard.component';
@@ -36,9 +39,10 @@ import { AlumnisComponent } from './composants/alumnis/alumnis.component';
 import { GaleriephotoComponent } from './pages/galerie/galerie.component';
 import {NgxPaginationModule} from 'ngx-pagination';
 import { ExcelPromoComponent } from './pages/excel-promo/excel-promo.component';
-import {CarouselModule} from 'primeng/carousel';
-import {ImageModule} from 'primeng/image';
+import { ViewimageComponent } from './viewimage/viewimage.component';
 import { PageInscriptionAlumniComponent } from './pages/page-inscription-alumni/page-inscription-alumni.component';
+
+
 
 //import { ChartsModule } from 'ng2-charts';
 @NgModule({
@@ -61,6 +65,7 @@ import { PageInscriptionAlumniComponent } from './pages/page-inscription-alumni/
     ProfileComponent,
     AlumnisComponent,
     ExcelPromoComponent,
+    ViewimageComponent,
     PageInscriptionAlumniComponent
     
   ],
@@ -78,7 +83,8 @@ import { PageInscriptionAlumniComponent } from './pages/page-inscription-alumni/
     NgxPaginationModule,
     BrowserAnimationsModule,
     CarouselModule,
-    ImageModule
+    ImageModule,
+    ChartsModule,
     //ChartsModule
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA],
