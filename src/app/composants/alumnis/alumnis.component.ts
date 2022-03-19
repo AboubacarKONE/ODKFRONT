@@ -1,3 +1,4 @@
+import { Role } from './../../enum/Role.enum';
 import { lignePromoModel } from './../../model/lignePromoModel';
 import { CustomHttpRespone } from './../../model/custom-http-response';
 import { NgForm } from '@angular/forms';
@@ -23,6 +24,8 @@ import { lignePromotion } from 'src/app/model/lignePromotion';
 export class AlumnisComponent implements OnInit {
   // @Input()
   // public idPromo: number;
+  public pageAlumni:number = 1;
+  public alum :Role.ALUMNI;
   private subscriptions: Subscription[] = [];
   public usersByPromos: User[];
   public refreshing: boolean;
@@ -51,7 +54,7 @@ export class AlumnisComponent implements OnInit {
         (response: User[]) => {
           this.usersByPromos = response;
           if (showNotification) {
-            // this.sendNotification(NotificationType.SUCCESS, `${response.length} alumnis chargés avec succès.`)
+            this.sendNotification(NotificationType.SUCCESS, `${response.length} alumnis chargés avec succès.`)
           }
         },
         (errorResponse: HttpErrorResponse) => {
@@ -82,7 +85,7 @@ export class AlumnisComponent implements OnInit {
           formData.append('idPromo', this.activatedRoute.snapshot.params.id);          
           this.addNewLignePromotion(formData);
           userForm.reset();
-          this.sendNotification(NotificationType.SUCCESS, `${response.prenom} ${response.nom} Ajout effectuer avec succès`)
+          this.sendNotification(NotificationType.SUCCESS, `${response.prenom} ${response.nom} ajout effectuer avec succès`)
         },
         (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
@@ -114,13 +117,13 @@ export class AlumnisComponent implements OnInit {
     this.currentUsername = editeUser.login;
     this.clickButton('openUserEdit');
   }
-  public onUpdateUser(): void {
+  public onUpdateAlumni(): void {
     const formData = this.userService.createUserFormData(this.currentUsername, this.editeUser, this.profileImage);
     this.subscriptions.push(
-      this.userService.updateUser(formData).subscribe(
+      this.userService.updateAlumni(formData).subscribe(
         (response: User) => {
           this.clickButton('closeEditUserModalButton');
-          // console.log(response.role.substring(5));          
+          console.log(response);          
           this.getUserByPromos(false);
           this.fileName = null;
           this.profileImage = null;
@@ -143,6 +146,21 @@ export class AlumnisComponent implements OnInit {
         (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
         }
+      )
+    )
+  }
+  sendInvitationAlumni(email:string){           
+    this.refreshing = true;
+    this.subscriptions.push(
+      this.userService.subscribeAlumniByEmail(email).subscribe(
+        (response:CustomHttpRespone)=>{
+          this.sendNotification(NotificationType.SUCCESS,response.message);          
+          this.refreshing = false
+        },
+        (errorResponse: HttpErrorResponse)=>{
+          this.sendNotification(NotificationType.WARNING, errorResponse.error.message);
+          this.refreshing = false
+        },
       )
     )
   }

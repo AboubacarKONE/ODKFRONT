@@ -142,13 +142,18 @@
             </button>
           </div>
           <div class="btn-group">
-            <button type="button" (click)="getFormateurs(true)" class="btn btn-info">
+            <button type="button" (click)="getFormateurs(true)" class="btn btn-info mr-2">
               <i *ngIf="refreshing" class="fas fa-sync fa-spin"></i><i *ngIf="!refreshing" class="fas fa-sync"></i>
             </button>
           </div>
-          <div class="col-xs-4 pull-right">
-            <button type="button" class="btn btn-success">invite <i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+          <div class="btn-group">
+            <button type="button" class="btn btn-info"  data-toggle="modal" data-target="#inviteFormateurModal">
+              <i class="fa-brands fa-invision"></i>
+            </button>
           </div>
+          <!-- <div class="col-xs-4 pull-right">
+            <button type="button" class="btn btn-success">invite <i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+          </div> -->
         </div>
         <table class="table table-hover">
           <thead class="table-borderless">
@@ -200,7 +205,7 @@
   <button [hidden]="true" type="button" id="openUserInfo" data-toggle="modal" data-target="#viewUserModal">
   </button>
   <button [hidden]="true" type="button" id="openUserEdit" data-toggle="modal" data-target="#editUserModal">
-  </button>
+  </button>         
   <!-- info modèle administrateurs -->
   <div class="modal fade bd-example-modal-lg" id="viewUserModal" tabindex="-1" role="dialog" aria-labelledby=""
     aria-hidden="true">
@@ -469,4 +474,44 @@
       </div>
     </div>
   </div>
+  <!--invite formateur-->
+  <div class="modal draggable fade bd-example-modal-lg" id="inviteFormateurModal" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <!-- <div class="modal-header">
+              <h5 class="modal-title text-center">Nouvelle question</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div> -->
+          <div class="modal-body">
+            <div class="">
+              <form #inviteFormateurForm="ngForm" (ngSubmit)="sendInvitationFormateur(inviteFormateurForm)" >
+                  <fieldset>
+                      <legend>Invitez un formateur à s'inscrire  </legend>
+                      <div class="form-group">
+                          <label for="exampleInputEmail1">Adresse e-mail</label>
+                          <input type="email" name="subscribe-user-email" required ngModel class="form-control"
+                              placeholder="Enter email (example@email.com)">
+                          <!-- <small class="form-text text-muted">We'll never share your email with anyone else.</small> -->
+                      </div>
+                      <button type="submit" [disabled]="inviteFormateurForm.invalid" class="btn btn-primary">
+                          <i *ngIf="refreshing" class="fas fa-spinner fa-spin"></i>&nbsp;&nbsp;
+                          <span *ngIf="refreshing">Loading...</span>
+                          <span *ngIf="!refreshing">Envoyez</span>
+                      </button>
+                  </fieldset>
+              </form>
+          </div>
+          </div>
+          <!-- <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                  id="new-quiz-close">Close</button>
+              <button type="button" (click)="saveNewQuizForm()" [disabled]="newQuizForm.invalid"
+                  class="btn btn-primary">Posez</button>
+          </div> -->
+      </div>
+  </div>
+</div>
 </div>

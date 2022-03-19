@@ -16,15 +16,11 @@
       *ngFor="let promo of promos | paginate : {itemsPerPage : 2, currentPage: pagePromo}">
       <div class="card">
         <div class="card-body" id="headingOne">
-          <button type="button" class="btn btn-info ml-auto w-auto" (click)="showExcel(promo.id)">
-            <i class=""></i>Excel
-          </button>
-          <button class="btn btn-block text-left" type="button" [routerLink]="['/alumni',promo.id]">
 
+          <button class="btn btn-block text-left" type="button">
             <div class="row mb-1 mr-0 custom-border">
               <!--  Details Utilisateur-->
-
-              <div class="col-md-5 custom-border-right mb-1 mt-1 ">
+              <div class="col-md-5 custom-border-right mb-1 mt-1 " [routerLink]="['/alumni',promo.id]">
                 <div class="col">
                   <div class="row">
                     <div class="col-md-1"><i class="fas fa-info-circle blue-color"></i></div>
@@ -40,26 +36,42 @@
                   </div>
                 </div>
               </div>
-
               <!--  details Promotion-->
-              <div class="col-md-3 custom-border-right mb-1 mt-1 ">
+              <div class="col-md-3 custom-border-right mb-1 mt-1">
                 <div class="col">
                   <div class="row">
-                    <div class="col-md-1"><i class="fas fa-qrcode blue-color"></i></div>
+                    <div class="col-md-1"><i class="fa-solid fa-user blue-color"></i></div>
                     <div class="col-md-10"></div>
                   </div>
                   <div class="row">
-                    <div class="col-md-1"><i class="fas fa-calendar-check blue-color"></i></div>
+                    <div class="col-md-1"><i class="fa-solid fa-user blue-color"></i></div>
                     <div class="col-md-10"></div>
                   </div>
                   <div class="row">
-                    <div class="col-md-1"><i class="fas fa-cart-arrow-down blue-color"></i></div>
+                    <div class="col-md-1"><i class="fa-solid fa-user blue-color"></i></div>
                     <div class="col-md-10"></div>
                   </div>
                 </div>
               </div>
-
-              <div>
+              <!--button actions-->
+              <div class="col-md-3 mb-1 mt-1 ">
+                <div class="row">
+                  <div class="col-md-4">
+                    <button type="button" class="btn btn-link">
+                      <i class="fas fa-pencil-alt"></i>&nbsp;Modifier
+                    </button>
+                  </div>
+                  <div class="col-md-4">
+                    <button type="button" class="btn btn-link text-success" (click)="showExcel(promo.id)">
+                      <i class="fa-solid fa-file-import"></i>&nbsp;importer
+                    </button>
+                  </div>
+                  <div class="col-md-4">
+                    <button type="button" class="btn btn-link" data-toggle="modal" data-target="#affecterFormModal">
+                      <i class="fa-solid fa-chalkboard-user"></i>&nbsp;Affecter
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </button>
@@ -77,8 +89,6 @@
   </div>
 </div>
 <!--nouvelle promotion-->
-<!-- <button [hidden]="true" type="button" id="addUserModal" data-toggle="modal" data-target="#editPromotionModal">
-  </button> -->
 <div class="modal draggable fade bd-example-modal-lg" id="addUserModal" tabindex="-1" role="dialog"
   aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -91,7 +101,7 @@
       </div>
       <div class="modal-body">
         <div>
-          <form #newPromotionForm="ngForm" (ngSubmit)="onaddNewPromotion(newPromotionForm.value)" >
+          <form #newPromotionForm="ngForm" (ngSubmit)="onaddNewPromotion(newPromotionForm.value)">
             <div class="form-group">
               <label for="libelle">libelle</label>
               <input type="text" name="libelle" required ngModel class="form-control">
@@ -110,7 +120,7 @@
                 <option *ngFor="let form of Formateurs" [value]="form?.id">{{ form?.prenom }} {{ form?.nom }}</option>
               </select>
             </div> -->
-            <div class="input-group mb-2">              
+            <div class="input-group mb-2">
             </div>
             <button type="submit" style="display: none;" id="new-promo-save"></button>
           </form>
@@ -118,7 +128,70 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal" id="new-promo-close">Close</button>
-        <button type="button" (click)="saveNewPromotion()" [disabled]="newPromotionForm.invalid" class="btn btn-primary">Save</button>
+        <button type="button" (click)="saveNewPromotion()" [disabled]="newPromotionForm.invalid"
+          class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--affecter formateur-->
+<div class="modal draggable fade bd-example-modal-lg" id="affecterFormModal" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-center">Nouvelle promotion</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- <div>
+          <form #newPromotionForm="ngForm" (ngSubmit)="onaddNewPromotion(newPromotionForm.value)">
+            <div class="form-group">
+              <label for="libelle">libelle</label>
+              <input type="text" name="libelle" required ngModel class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="dateDebut">Date debut</label>
+              <input type="date" name="dateDebut" required ngModel class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="datefin">Date fin</label>
+              <input type="date" name="datefin" required ngModel class="form-control">
+            </div>            
+            <div class="input-group mb-2">
+            </div>
+            <button type="submit" style="display: none;" id="new-promo-save"></button>
+          </form>
+        </div> -->
+        <div class="row mt-2 p-3 custom-border">
+          <div class="form-row col-md-12">
+            <div class="col-md-4">
+              <input type="text" class="form-control" placeholder="login" [(ngModel)]="login">
+              <div class="autocomplete shadow p-3 mb-5 bg-white rounded">
+                <p class="p-1" *ngFor="let form of Formateur" 
+                   (click)="selectFormateurClick()"
+                >
+                  {{form.prenom}} {{form.nom}}
+                </p>
+              </div>
+            </div>
+            <!-- <div class="col-md-4">
+              <input type="text" class="form-control" placeholder="email" [(ngModel)]="form.email" >
+            </div> -->
+            <!-- <div class="col-md-3">
+              <input type="text" class="form-control" placeholder="telephone" >
+            </div> -->
+            <div class="col-md-1">
+              <button type="button" class="btn btn-success" (click)="ajouterLigneFormateur()"><i class="fas fa-plus"></i></button>
+            </div>
+      </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="new-promo-close">Close</button>
+        <button type="button" (click)="saveNewPromotion()" [disabled]="newPromotionForm.invalid"
+          class="btn btn-primary">Save</button>
       </div>
     </div>
   </div>

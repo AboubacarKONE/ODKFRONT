@@ -9,8 +9,8 @@ import { NotificationType } from 'src/app/enum/notification-type.enum';
 import { NgForm } from '@angular/forms';
 import { CustomHttpRespone } from 'src/app/model/custom-http-response';
 import { AuthenticationService } from 'src/app/service/authentication.service';
-import { Role } from 'src/app/enum/Role.enum';
-import { SubSink } from 'subsink';
+
+
 
 @Component({
   selector: 'app-administrateurs',
@@ -18,7 +18,7 @@ import { SubSink } from 'subsink';
   styleUrls: ['./administrateurs.component.scss']
 })
 export class AdministrateursComponent implements OnInit, OnDestroy {
-   // private subs = new SubSink()
+  // private subs = new SubSink()
   pageFormateur:number = 1;  
   pageAdmin:number = 1;
   pageSuperAdmin:number = 1;   
@@ -128,7 +128,7 @@ export class AdministrateursComponent implements OnInit, OnDestroy {
           this.fileName = null;
           this.profileImage = null;
           userForm.reset();
-          this.sendNotification(NotificationType.SUCCESS, `${response.prenom} ${response.nom} Ajout effectuer avec succès`)
+          this.sendNotification(NotificationType.SUCCESS, `${response.prenom} ${response.nom} ajout effectuer avec succès`)
         },
         (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
@@ -172,6 +172,23 @@ export class AdministrateursComponent implements OnInit, OnDestroy {
         (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
         }
+      )
+    )
+  }
+  sendInvitationFormateur(inviteForm:NgForm){     
+    this.refreshing = true;
+    const emailAdresse = inviteForm.value['subscribe-user-email'];
+    this.subscriptions.push(
+      this.userService.subscribeUserByEmail(emailAdresse).subscribe(
+        (response:CustomHttpRespone)=>{
+          this.sendNotification(NotificationType.SUCCESS,response.message);          
+          this.refreshing = false
+        },
+        (errorResponse: HttpErrorResponse)=>{
+          this.sendNotification(NotificationType.WARNING, errorResponse.error.message);
+          this.refreshing = false
+        },
+        ()=>inviteForm.reset()
       )
     )
   }

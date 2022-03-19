@@ -48,8 +48,17 @@ export class UserService {
   updateUser(formData: FormData): Observable<User> {
     return this.http.post<User>(`${this.host}/odkConnect/user/updateUser`, formData);
   }
+  updateAlumni(formData: FormData): Observable<User> {
+    return this.http.post<User>(`${this.host}/odkConnect/user/updateAlumni`, formData);
+  }
   resetPassord(email: string): Observable<CustomHttpRespone> {
     return this.http.get<CustomHttpRespone>(`${this.host}/odkConnect/user/resetpassword/${email}`);
+  }
+  subscribeUserByEmail(email:string): Observable<CustomHttpRespone> {
+    return this.http.get<CustomHttpRespone>(`${this.host}/odkConnect/user/subscribeUserByEmail/${email}`);
+  }
+  subscribeAlumniByEmail(email:string): Observable<CustomHttpRespone> {
+    return this.http.get<CustomHttpRespone>(`${this.host}/odkConnect/user/subscribeAlumByEmail/${email}`);
   }
   updateProfileImage(formData: FormData): Observable<HttpEvent<User>> {
     return this.http.post<User>(`${this.host}/odkConnect/user/updateProfileImage`, formData, {

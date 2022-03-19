@@ -1,8 +1,5 @@
-import { lignePromotion } from './../../model/lignePromotion';
-import { AlumnisComponent } from './../../composants/alumnis/alumnis.component';
 import { lignePromoModel } from './../../model/lignePromoModel';
 import { LignePromoService } from './../../service/ligne-promo.service';
-import { NgForm } from '@angular/forms';
 import { AuthenticationService } from 'src/app/service/authentication.service';
 import { User } from 'src/app/model/User';
 import { NotificationService } from './../../service/notification.service';
@@ -24,10 +21,16 @@ import { ExcelPromoComponent } from '../excel-promo/excel-promo.component';
 })
 export class PromotionComponent implements OnInit, OnDestroy {
   pagePromo: number = 1;
-  idUser:number;
+  idUser: number;
+  login = '';
+  email='';
+
+  // public idPromo:number;
   public Formateurs: User[];
-  public formateur :User;
+  // public formateur :User;
+  public search;
   public user: User;
+  public Formateur: User[];
   public promoSaved: promotion;
   public ligPromo = new lignePromoModel;
   public isAdmin: boolean;
@@ -41,18 +44,19 @@ export class PromotionComponent implements OnInit, OnDestroy {
     private userservice: UserService,
     private notificationService: NotificationService,
     private authenticationService: AuthenticationService,
-    private ligPromoService: LignePromoService,
-    private router: Router,
     public dialoService: DialogService,
-    private userService: UserService) { }
+    private lignePromoService: LignePromoService) { }
 
   ngOnInit(): void {
+
     this.getPromos(true);
+    // this.getFormateursByPromos(true);
     this.getFormateurs();
     this.user = this.authenticationService.getUserFromLocalCache();
     this.isAdmin = this.authenticationService.isAdmin;
     this.isFormateur = this.authenticationService.isFormateur;
   }
+
   UpdateProfileImage() {
     this.clickButton('profile-image-input')
   }
@@ -74,21 +78,31 @@ export class PromotionComponent implements OnInit, OnDestroy {
       )
     );
   }
-  getUserById(id:number){
-   this.subscriptions.push(
-    this.userService.getUsersById(id).subscribe(
-      (responseUser:User)=>{
-          this.formateur = responseUser;
-          // console.log(form);
-          
-          this.ligPromo.user =this.formateur;
-      },
-      (errorResponse: HttpErrorResponse) => {
-        this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
-      }
-    ) 
-   )
-  }
+  // filtrerFormateur(): void {
+  //   if (this.login == null) {
+  //     this.getFormateurs();
+  //   }
+  //   this.Formateur = this.Formateur.filter(art => art.login?.includes(this.login));
+  //   console.log(this.Formateur);
+    
+  // }
+  selectFormateurClick() { }
+  ajouterLigneFormateur() { }
+  // getUserById(id:number){
+  //  this.subscriptions.push(
+  //   this.userService.getUsersById(id).subscribe(
+  //     (responseUser:User)=>{
+  //         this.formateur = responseUser;
+  //         // console.log(form);
+
+  //         this.ligPromo.user =this.formateur;
+  //     },
+  //     (errorResponse: HttpErrorResponse) => {
+  //       this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+  //     }
+  //   ) 
+  //  )
+  // }
   onaddNewPromotion(promoForm: promotion) {
     // console.log(this.idUser);    
     this.subscriptions.push(
@@ -120,11 +134,24 @@ export class PromotionComponent implements OnInit, OnDestroy {
   saveNewPromotion() {
     this.clickButton('new-promo-save')
   }
+  getFormateursByPromos(idPromo: number) {
+    this.subscriptions.push(
+      this.lignePromoService.findAllFormateurByPromotionId(idPromo).subscribe(
+        (response: User[]) => {
+          this.Formateurs = response;
+          console.log(this.Formateurs);
+        },
+        (errorResponse: HttpErrorResponse) => {
+          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+        }
+      )
+    );
+  }
   public getFormateurs(): void {
     this.subscriptions.push(
-      this.userService.getUsersByRole('ROLE_FORMATEUR').subscribe(
-        (response: User[]) => {         
-          this.Formateurs = response;
+      this.userservice.getUsersByRole('ROLE_FORMATEUR').subscribe(
+        (response: User[]) => {
+          this.Formateur = response;
         },
         (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
@@ -142,13 +169,6 @@ export class PromotionComponent implements OnInit, OnDestroy {
   private clickButton(buttonId: string): void {
     document.getElementById(buttonId)?.click()
   }
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
-  }
-
-
-
-
   showExcel(id) {
     this.userservice.setIdAlumis(id);
     this.ref = this.dialoService.open(ExcelPromoComponent, {
@@ -157,5 +177,8 @@ export class PromotionComponent implements OnInit, OnDestroy {
       // contentStyle: {"max-height": "500px", "overflow": "auto"},
       // baseZIndex: 10000
     });
+  }
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 }

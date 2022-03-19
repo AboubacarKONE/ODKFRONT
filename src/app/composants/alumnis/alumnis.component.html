@@ -2,67 +2,69 @@
 <div class="tab-content mt-3" id="myTabContent">
   <!-- Administrateur table -->
   <div class="tab-pane fade show active" id="users">
-        <div class="mb-3 float-right">
-          <div class="btn-group mr-2">
-            <!-- <form class="form-inline my-2 my-lg-0 justify-content-center">
+    <div class="mb-3 float-right">
+      <div class="btn-group mr-2">
+        <!-- <form class="form-inline my-2 my-lg-0 justify-content-center">
                         <input name="searchTerm" #searchInput="ngModel" class="form-control mr-sm-2" ngModel type="search"
                             placeholder="Search users...">
                     </form> -->
-            <button [hidden]='!isAdmin' type="button" class="btn btn-info" data-toggle="modal"
-              data-target="#addUserModal">
-              <i class="fa fa-plus"></i>Nouveau
-            </button>
-          </div>
-          <div class="btn-group">
-            <button type="button" (click)="getUserByPromos(true)" class="btn btn-info">
-              <i *ngIf="refreshing" class="fas fa-sync fa-spin"></i><i *ngIf="!refreshing" class="fas fa-sync"></i>
-            </button>
-          </div>
-        </div>
-        <table class="table table-hover">
-          <thead class="table-borderless">
-              <tr class="text-center">
-                  <th>Photo</th>
-                  <th>User ID</th>
-                  <th>Prenom</th>
-                  <th>Nom</th>
-                  <th>Login</th>
-                  <th>Email</th>
-                  <th>Adresse</th>
-                  <th>Telephone</th>
-                  <th>Profession</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-              </tr>
-          </thead>
-          <tbody *ngFor="let alumni of usersByPromos ">
-              <tr class="text-center">
-                  <td>
-                      <img height="40" width="40" src="{{alumni?.profileImageUrl}}"
-                          class="rounded-circle img-fluid img-thumbnail" alt="" />
-                  </td>
-                  <td (click)="onSelectUsers(alumni)">{{alumni?.userId}}</td>
-                  <td (click)="onSelectUsers(alumni)">{{alumni?.prenom}}</td>
-                  <td (click)="onSelectUsers(alumni)">{{alumni?.nom}}</td>
-                  <td (click)="onSelectUsers(alumni)">{{alumni?.login}}</td>
-                  <td (click)="onSelectUsers(alumni)">{{alumni?.email}}</td>
-                  <td (click)="onSelectUsers(alumni)">{{alumni?.adresse}}</td>
-                  <td (click)="onSelectUsers(alumni)">{{alumni?.telephone}}</td>
-                  <td (click)="onSelectUsers(alumni)">{{alumni?.profession}}</td>
-                  <td (click)="onSelectUsers(alumni)">
-                      <span [hidden]="!alumni?.active" class="badge badge-success">Active</span>
-                      <span [hidden]="alumni?.active" class="badge badge-danger">Inactive</span>
-                  </td>
-                  <td class="">
-                      <div class="btn-group">
-                          <button class="btn btn-outline-info" (click)="onEditUser(alumni)"><i class="fas fa-edit"></i></button>
-                          <button [hidden]='!isAdmin' class="btn btn-outline-danger"(click)="onDeleteUser(alumni?.login)"><i class="fas fa-trash"></i></button>
-                      </div>
-                  </td>
-              </tr>
-          </tbody>
-      </table>
-      
+        <button [hidden]='!isAdmin' type="button" class="btn btn-info" data-toggle="modal" data-target="#addUserModal">
+          <i class="fa fa-plus"></i>Nouveau
+        </button>
+      </div>
+      <div class="btn-group">
+        <button type="button" (click)="getUserByPromos(true)" class="btn btn-info">
+          <i *ngIf="refreshing" class="fas fa-sync fa-spin"></i><i *ngIf="!refreshing" class="fas fa-sync"></i>
+        </button>
+      </div>
+    </div>
+    <table class="table table-hover">
+      <thead class="table-borderless">
+        <tr class="text-center">
+          <th>Photo</th>
+          <th>User ID</th>
+          <th>Prenom</th>
+          <th>Nom</th>
+          <th>Login</th>
+          <th>Email</th>
+          <th>Adresse</th>
+          <th>Telephone</th>
+          <th>Profession</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody *ngFor="let alumni of usersByPromos | paginate : {itemsPerPage : 4, currentPage: pageAlumni}">
+        <tr class="text-center">
+          <td>
+            <img height="40" width="40" src="{{alumni?.profileImageUrl}}" class="rounded-circle img-fluid img-thumbnail"
+              alt="" />
+          </td>
+          <td (click)="onSelectUsers(alumni)">{{alumni?.userId}}</td>
+          <td (click)="onSelectUsers(alumni)">{{alumni?.prenom}}</td>
+          <td (click)="onSelectUsers(alumni)">{{alumni?.nom}}</td>
+          <td (click)="onSelectUsers(alumni)">{{alumni?.login}}</td>
+          <td (click)="onSelectUsers(alumni)">{{alumni?.email}}</td>
+          <td (click)="onSelectUsers(alumni)">{{alumni?.adresse}}</td>
+          <td (click)="onSelectUsers(alumni)">{{alumni?.telephone}}</td>
+          <td (click)="onSelectUsers(alumni)">{{alumni?.profession}}</td>
+          <td (click)="onSelectUsers(alumni)">
+            <span [hidden]="!alumni?.active" class="badge badge-success">Active</span>
+            <span [hidden]="alumni?.active" class="badge badge-danger">Inactive</span>
+          </td>
+          <td class="">
+            <div class="btn-group">
+              <button class="btn btn-outline-info" (click)="onEditUser(alumni)"><i class="fas fa-edit"></i></button>
+              <button [hidden]='!isAdmin' class="btn btn-outline-danger" (click)="onDeleteUser(alumni?.login)"><i
+                  class="fas fa-trash"></i></button>
+              <button *ngIf="!alumni.login " [hidden]='!isFormateur' class="btn btn-outline-primary"
+                (click)="sendInvitationAlumni(alumni.email)"><i class="fa-solid fa-link"></i></button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <pagination-controls (pageChange)=" pageAlumni = $event"></pagination-controls>
   </div>
   <button [hidden]="true" type="button" id="openUserInfo" data-toggle="modal" data-target="#viewUserModal">
   </button>
@@ -127,7 +129,7 @@
                 <li *ngIf="selectedUser?.lastLoginDateDisplay" class="list-group-item"><i
                     class="fas fa-sign-in-alt float-right"></i>
                   {{selectedUser?.lastLoginDateDisplay | date: 'medium'}}
-                </li>                
+                </li>
                 <li class="list-group-item">
                   <span [hidden]="selectedUser?.nonLocked">
                     <i class="fa fa-lock float-right" style="color: red;">
@@ -194,7 +196,7 @@
               </div>
               <div *ngIf="isAdmin" class="form-group">
                 <label for="authority">Role</label>
-                <select name="role" required  value="ROLE_ALUM" ngModel="ROLE_ALUM" class="form-control">
+                <select name="role" required value="alum" ngModel="ROLE_ALUM" class="form-control">
                   <option value="ROLE_ALUM">ALUMNI</option>
                   <!-- <option value="ROLE_FORMATEUR">FORMATEUR</option>
                   <option value="ROLE_ADMIN">ADMIN</option>
@@ -227,7 +229,7 @@
                 </div>
                 <div class="form-check disabled">
                   <label class="form-check-label">
-                    <input type="checkbox" name="notLocked" ngModel class="form-check-input">
+                    <input type="checkbox" name="nonLocked" ngModel class="form-check-input">
                     Unlocked
                   </label>
                 </div>
@@ -292,9 +294,15 @@
                   class="form-control">
               </div>
               <div class="form-group">
+                <label for="profession">Profession</label>
+                <input type="text" name="profession" [disabled]="!isAdmin" required [(ngModel)]="editeUser.profession"
+                  class="form-control">
+              </div>
+              <div class="form-group">
                 <label for="authority">Role <small [hidden]="!isAdmin">(read only)</small></label>
-                <select name="role" value="ROLE_ALUM" [hidden]="!isAdmin" required [(ngModel)]="editeUser.role" class="form-control">
-                  <option value="ROLE_ALUM">ALUMNI</option>                  
+                <select name="role" value="ROLE_ALUM" [hidden]="!isAdmin" required [(ngModel)]="editeUser.role"
+                  class="form-control">
+                  <option value="ROLE_ALUM">ALUMNI</option>
                 </select>
               </div>
               <div class="input-group mb-2">
@@ -320,7 +328,7 @@
                 </div>
                 <div class="form-check disabled">
                   <label class="form-check-label">
-                    <input name="notLocked" [disabled]="!isAdmin" type="checkbox" [(ngModel)]="editeUser.nonLocked"
+                    <input name="nonLocked" [disabled]="!isAdmin" type="checkbox" [(ngModel)]="editeUser.nonLocked"
                       class="form-check-input">
                     Unlocked <small [hidden]="!isAdmin">(read only)</small>
                   </label>
@@ -332,7 +340,7 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal"
             id="closeEditUserModalButton">Close</button>
-          <button type="button" (click)="onUpdateUser()" [disabled]="editeUserForm.invalid || !isAdmin "
+          <button type="button" (click)="onUpdateAlumni()" [disabled]="editeUserForm.invalid || !isAdmin "
             class="btn btn-primary">Save changes</button>
         </div>
       </div>

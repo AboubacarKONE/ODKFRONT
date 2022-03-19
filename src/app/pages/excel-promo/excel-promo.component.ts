@@ -179,7 +179,7 @@ export class ExcelPromoComponent implements OnInit {
           
          }
          this.sendNotification(NotificationType.SUCCESS, `liste importée avec succès`)
-         this.annuler()
+        //  this.annuler()
           // this.router.navigateByUrl('promotions', {skipLocationChange: true}).then(()=>
           // this.router.navigate(['promotions'])); 
    

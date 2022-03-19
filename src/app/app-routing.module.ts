@@ -1,3 +1,4 @@
+import { PageInscriptionAlumniComponent } from './pages/page-inscription-alumni/page-inscription-alumni.component';
 import { AlumnisComponent } from './composants/alumnis/alumnis.component';
 import { AuthenticationGuard } from './guard/authentication.guard';
 import { ChangerMotDePasseComponent } from './pages/changer-mot-de-passe/changer-mot-de-passe.component';
@@ -23,6 +24,10 @@ const routes: Routes = [
   {
     path:'inscrire',
     component:PageInscriptionComponent
+  },
+  {
+    path:'inscrire/alumni',
+    component:PageInscriptionAlumniComponent
   },
   {
     path:'',
