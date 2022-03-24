@@ -23,6 +23,7 @@ import { responseModel } from 'src/app/model/responseModel';
 })
 export class ForumComponent implements OnInit, OnDestroy {
   // @Input()
+  public refreshing:boolean;
   public responselenght: number;
   public idCat: number;
   public idQuiz: number;
@@ -60,6 +61,7 @@ export class ForumComponent implements OnInit, OnDestroy {
     // console.log(fileName, profileImage);
   }
   onNewCatForum(catForm: NgForm) {
+    this.refreshing=true;
     const formData = new FormData();
     formData.append('libelle', catForm.value.libelle);
     formData.append('id', JSON.stringify(this.user.id));
@@ -71,11 +73,13 @@ export class ForumComponent implements OnInit, OnDestroy {
           this.fileName = null;
           this.profileImage = null;
           catForm.reset();
+          this.refreshing = false;
           this.sendNotification(NotificationType.SUCCESS, `categorie de forum ajoutée effectuer avec succès`)
           this.getCategoryForums();
         },
         (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+          this.refreshing =false;
           this.profileImage = null;
         }
       )
@@ -107,6 +111,7 @@ export class ForumComponent implements OnInit, OnDestroy {
   }
   public onAddQuizForum(quizForm: NgForm) {
     if (this.idCat != null) {
+      this.refreshing=true;
       const formData = new FormData();
       formData.append('description', quizForm.value.description);
       formData.append('idUser', JSON.stringify(this.user.id));
@@ -119,12 +124,14 @@ export class ForumComponent implements OnInit, OnDestroy {
             this.fileName = null;
             this.profileImage = null;
             quizForm.reset();
+            this.refreshing=false;
             this.sendNotification(NotificationType.SUCCESS, `QUESTION POSEZ AVEC SUCCES`)
             this.getAllQuizByCatForum(this.idCat);
           },
           (errorResponse: HttpErrorResponse) => {
             this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
             this.profileImage = null;
+            this.refreshing=false;
           }
         )
       )
@@ -133,6 +140,7 @@ export class ForumComponent implements OnInit, OnDestroy {
     }
   }
   public onAddResponseForum(responseForum: NgForm) {
+    this.refreshing=true;
     const formData = new FormData();
     formData.append('description', responseForum.value.description);
     formData.append('idUser', JSON.stringify(this.user.id));
@@ -146,12 +154,14 @@ export class ForumComponent implements OnInit, OnDestroy {
           this.fileName = null;
           this.profileImage = null;
           responseForum.reset();
+          this.refreshing=false;
           this.sendNotification(NotificationType.SUCCESS, `VOUS AVEZ REPONDU A LA QUESTION`)
           // this.getAllQuizByCatForum(this.idCat);
         },
         (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
           this.profileImage = null;
+          this.refreshing=false;
         }
       )
     )
@@ -211,6 +221,7 @@ export class ForumComponent implements OnInit, OnDestroy {
     this.clickButton('openResponseEdit');
   }
   public onUpdateQuiz() {
+    this.refreshing=true;
     const formData = new FormData();
     formData.append('idQuiz', JSON.stringify(this.editQuiz.id));
     formData.append('description', this.editQuiz.description);
@@ -221,17 +232,20 @@ export class ForumComponent implements OnInit, OnDestroy {
           this.clickButton('closeEditQuizModalButton');
           this.fileName = null;
           this.profileImage = null;
+          this.refreshing=false;
           this.sendNotification(NotificationType.SUCCESS, `QUESTION MODIFIEZ AVEC SUCCES`)
           this.getAllQuizByCatForum(this.editQuiz.categoryForum.id);
         },
         (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
           this.profileImage = null;
+          this.refreshing=false;
         }
       )
     )
   }
   public onUpdateResponse(){
+    this.refreshing=true;
     const formData = new FormData();
     formData.append('idResponse', JSON.stringify(this.editResponse.id));
     formData.append('description', this.editResponse.description);
@@ -242,12 +256,14 @@ export class ForumComponent implements OnInit, OnDestroy {
           this.clickButton('closeEditResponseModalButton');
           this.fileName = null;
           this.profileImage = null;
+          this.refreshing=false;
           this.sendNotification(NotificationType.SUCCESS, `REPONSE MODIFIEZ AVEC SUCCES`)
           this.getAllQuizByCatForum(this.editQuiz.categoryForum.id);
         },
         (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
           this.profileImage = null;
+          this.refreshing=false;
         }
       )
     )

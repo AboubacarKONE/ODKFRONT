@@ -19,9 +19,9 @@ import { AuthenticationService } from 'src/app/service/authentication.service';
 })
 export class AdministrateursComponent implements OnInit, OnDestroy {
   // private subs = new SubSink()
-  pageFormateur:number = 1;  
-  pageAdmin:number = 1;
-  pageSuperAdmin:number = 1;   
+  pageFormateur: number = 1;
+  pageAdmin: number = 1;
+  pageSuperAdmin: number = 1;
   public users: User[];
   public Admin: User[];
   public Formateur: User[];
@@ -54,7 +54,7 @@ export class AdministrateursComponent implements OnInit, OnDestroy {
       this.userService.getUsersByRole('ROLE_SUPER_ADMIN').subscribe(
         (response: User[]) => {
           this.userService.addUsersToLocalCache(response);
-          this.SuperAdmin = response;          
+          this.SuperAdmin = response;
           this.refreshing = false;
           if (showNotification) {
             this.sendNotification(NotificationType.SUCCESS, `${response.length} super-administrateurs chargés avec succès.`)
@@ -92,7 +92,7 @@ export class AdministrateursComponent implements OnInit, OnDestroy {
       this.userService.getUsersByRole('ROLE_FORMATEUR').subscribe(
         (response: User[]) => {
           this.userService.addUsersToLocalCache(response);
-          this.Formateur = response;         
+          this.Formateur = response;
           this.refreshing = false;
           if (showNotification) {
             this.sendNotification(NotificationType.SUCCESS, `${response.length} formateurs chargés avec succès.`)
@@ -119,19 +119,22 @@ export class AdministrateursComponent implements OnInit, OnDestroy {
     this.clickButton('new-user-save');
   }
   public onAddNewUser(userForm: NgForm): void {
+    this.refreshing = true;
     const formData = this.userService.createUserFormData(null, userForm.value, this.profileImage);
     this.subscriptions.push(
       this.userService.addUser(formData).subscribe(
         (response: User) => {
           this.clickButton('new-user-close');
-          this.getAdministrateurs(false);          
+          this.getAdministrateurs(false);
           this.fileName = null;
           this.profileImage = null;
           userForm.reset();
+          this.refreshing = false;
           this.sendNotification(NotificationType.SUCCESS, `${response.prenom} ${response.nom} ajout effectuer avec succès`)
         },
         (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+          this.refreshing = false;
           this.profileImage = null;
         }
       )
@@ -175,20 +178,20 @@ export class AdministrateursComponent implements OnInit, OnDestroy {
       )
     )
   }
-  sendInvitationFormateur(inviteForm:NgForm){     
+  sendInvitationFormateur(inviteForm: NgForm) {
     this.refreshing = true;
     const emailAdresse = inviteForm.value['subscribe-user-email'];
     this.subscriptions.push(
       this.userService.subscribeUserByEmail(emailAdresse).subscribe(
-        (response:CustomHttpRespone)=>{
-          this.sendNotification(NotificationType.SUCCESS,response.message);          
+        (response: CustomHttpRespone) => {
+          this.sendNotification(NotificationType.SUCCESS, response.message);
           this.refreshing = false
         },
-        (errorResponse: HttpErrorResponse)=>{
+        (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.WARNING, errorResponse.error.message);
           this.refreshing = false
         },
-        ()=>inviteForm.reset()
+        () => inviteForm.reset()
       )
     )
   }
@@ -196,7 +199,7 @@ export class AdministrateursComponent implements OnInit, OnDestroy {
   //   console.log(event);
   //   this.pageFormateur= event;
   // }
- 
+
   private sendNotification(notificationType: NotificationType, message: string): void {
     if (message) {
       this.notificationService.notify(notificationType, message);

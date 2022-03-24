@@ -1,3 +1,5 @@
+import { User } from './../../model/User';
+import { AuthenticationService } from './../../service/authentication.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -6,10 +8,14 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./changer-mot-de-passe.component.scss']
 })
 export class ChangerMotDePasseComponent implements OnInit {
-
-  constructor() { }
+  public user:User;
+  constructor(private authenticationService: AuthenticationService) { }
 
   ngOnInit(): void {
+    this.user = this.authenticationService.getUserFromLocalCache(); 
+    
   }
+  changerMotDePasseUtilisateur(){}
+  cancel(){}
 
 }

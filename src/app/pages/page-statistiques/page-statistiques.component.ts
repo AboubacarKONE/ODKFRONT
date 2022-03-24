@@ -158,7 +158,10 @@ ref: DynamicDialogRef | undefined;
     );
   }
 
-  
+  onScroll(){
+    console.log('scrolled');
+    
+  }
 
 
   onNewMediaForum(mediaForm: NgForm) {
@@ -255,6 +258,7 @@ ref: DynamicDialogRef | undefined;
       // contentStyle: {"max-height": "500px", "overflow": "auto"},
       // baseZIndex: 10000
     });
+    
     
 
   }

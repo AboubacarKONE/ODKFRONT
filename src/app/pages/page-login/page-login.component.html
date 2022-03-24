@@ -28,7 +28,7 @@
             <span class="help-block" style="color:red;" *ngIf="passwordInput.invalid && passwordInput.touched">Please
               entrez le mot de passe</span>
             <div class="mb-3 d-flex justify-content-between">
-              <a [routerLink]="['/inscrire']" class="btn btn-link">S'inscrire</a>
+              <a  [routerLink]="['/inscrire']" class="btn btn-link">S'inscrire</a>
               <button type="submit" [disabled]="loginForm.invalid || loading" name="button" class="btn btn-primary">
                 <i *ngIf="loading" class="fas fa-spinner fa-spin"></i>
                 <span *ngIf="loading">Loading...</span>

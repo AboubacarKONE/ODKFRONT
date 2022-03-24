@@ -24,12 +24,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
   public fileStatus = new FileUploadStatus();
   public isAdmin: boolean;
   public isFormateur: boolean;
+  public isSuperAdmin:boolean;
   constructor(private authenticationService: AuthenticationService, private userService: UserService,
     private notificationService: NotificationService, private router: Router) { }
   ngOnInit(): void {
     this.user = this.authenticationService.getUserFromLocalCache(); 
     this.isAdmin = this.authenticationService.isAdmin;
     this.isFormateur = this.authenticationService.isFormateur;
+    this.isSuperAdmin = this.authenticationService.isSuperAdmin;
   }
   public onUpdateProfileImage():void { 
     const formData = new FormData();

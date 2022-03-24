@@ -1,3 +1,4 @@
+import { ChangerModp } from './../model/changerMdp';
 import { User } from './../model/User';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpErrorResponse, HttpEvent } from '@angular/common/http';
@@ -69,6 +70,9 @@ export class UserService {
       reportProgress: true,
       observe: 'events'
     });
+  }
+  updatePassword(user:ChangerModp):Observable<User>{
+    return this.http.post<User>(`${this.host}/odkConnect/user/update/password`,user);
   }
   deleteUser(user: string): Observable<CustomHttpRespone> {
     return this.http.delete<CustomHttpRespone>(`${this.host}/odkConnect/user/delete/${user}`);

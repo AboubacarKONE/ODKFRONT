@@ -8,12 +8,12 @@
                         <input name="searchTerm" #searchInput="ngModel" class="form-control mr-sm-2" ngModel type="search"
                             placeholder="Search users...">
                     </form> -->
-        <button [hidden]='!isAdmin' type="button" class="btn btn-info" data-toggle="modal" data-target="#addUserModal">
-          <i class="fa fa-plus"></i>Nouveau
+        <button [hidden]='!isAdmin' type="button" class="btn btn-dark" data-toggle="modal" data-target="#addUserModal">
+          <i class="fa fa-plus"></i>
         </button>
       </div>
       <div class="btn-group">
-        <button type="button" (click)="getUserByPromos(true)" class="btn btn-info">
+        <button type="button" (click)="getUserByPromos(true)" class="btn btn-dark">
           <i *ngIf="refreshing" class="fas fa-sync fa-spin"></i><i *ngIf="!refreshing" class="fas fa-sync"></i>
         </button>
       </div>
@@ -54,10 +54,10 @@
           </td>
           <td class="">
             <div class="btn-group">
-              <button class="btn btn-outline-info" (click)="onEditUser(alumni)"><i class="fas fa-edit"></i></button>
+              <button *ngIf="alumni.login && alumni.email" class="btn btn-outline-dark" (click)="onEditUser(alumni)"><i class="fas fa-edit"></i></button>
               <button [hidden]='!isAdmin' class="btn btn-outline-danger" (click)="onDeleteUser(alumni?.login)"><i
                   class="fas fa-trash"></i></button>
-              <button *ngIf="!alumni.login " [hidden]='!isFormateur' class="btn btn-outline-primary"
+              <button *ngIf="!alumni.login " [hidden]='!isFormateur' class="btn btn-outline-dark"
                 (click)="sendInvitationAlumni(alumni.email)"><i class="fa-solid fa-link"></i></button>
             </div>
           </td>
@@ -70,7 +70,7 @@
   </button>
   <button [hidden]="true" type="button" id="openUserEdit" data-toggle="modal" data-target="#editUserModal">
   </button>
-  <!-- info modèle administrateurs -->
+  <!-- info modèle alumnis -->
   <div class="modal fade bd-example-modal-lg" id="viewUserModal" tabindex="-1" role="dialog" aria-labelledby=""
     aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -147,7 +147,8 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
+          <a class="btn btn-dark" href="https://wa.me/{{selectedUser?.telephone}}" target="_blank" role="button">Contact</a>         
         </div>
       </div>
     </div>
@@ -216,7 +217,7 @@
                     (change)="onProfileImageChange($any($event).target.files[0].name, $any($event).target.files[0])"
                     class="custom-file-input">
                   <label class="custom-file-label"><span [hidden]="!fileName">{{fileName}}</span>
-                    <span [hidden]="!fileName">Choose File</span>
+                    <span [hidden]="fileName">Choisir fichier</span>
                   </label>
                 </div>
               </div>
@@ -227,21 +228,20 @@
                     Active
                   </label>
                 </div>
-                <div class="form-check disabled">
+                <!-- <div class="form-check disabled">
                   <label class="form-check-label">
                     <input type="checkbox" name="nonLocked" ngModel class="form-check-input">
                     Unlocked
                   </label>
-                </div>
+                </div> -->
               </fieldset>
               <button type="submit" style="display: none;" id="new-user-save"></button>
             </form>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal" id="new-user-close">Close</button>
-          <button type="button" (click)="saveNewUser()" [disabled]="newUserForm.invalid" class="btn btn-primary">Save
-            changes</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal" id="new-user-close">Fermer</button>
+          <button type="button" (click)="saveNewUser()" [disabled]="newUserForm.invalid" class="btn btn-dark">Enregistrer</button>
         </div>
       </div>
     </div>
@@ -299,7 +299,7 @@
                   class="form-control">
               </div>
               <div class="form-group">
-                <label for="authority">Role <small [hidden]="!isAdmin">(read only)</small></label>
+                <label for="authority">Role <small [hidden]="isAdmin">(read only)</small></label>
                 <select name="role" value="ROLE_ALUM" [hidden]="!isAdmin" required [(ngModel)]="editeUser.role"
                   class="form-control">
                   <option value="ROLE_ALUM">ALUMNI</option>
@@ -314,7 +314,7 @@
                     (change)="onProfileImageChange($any($event).target.files[0].name, $any($event).target.files[0])"
                     class="custom-file-input">
                   <label class="custom-file-label"><span [hidden]="!fileName">{{fileName}}</span>
-                    <span [hidden]="fileName">Choose File</span>
+                    <span [hidden]="fileName">Choisir fichier</span>
                   </label>
                 </div>
               </div>
@@ -323,14 +323,14 @@
                   <label class="form-check-label">
                     <input name="active" type="checkbox" [disabled]="!isAdmin" [(ngModel)]="editeUser.active"
                       class="form-check-input">
-                    Active <small [hidden]="!isAdmin">(read only)</small>
+                    Active <small [hidden]="isAdmin">(read only)</small>
                   </label>
                 </div>
                 <div class="form-check disabled">
                   <label class="form-check-label">
                     <input name="nonLocked" [disabled]="!isAdmin" type="checkbox" [(ngModel)]="editeUser.nonLocked"
                       class="form-check-input">
-                    Unlocked <small [hidden]="!isAdmin">(read only)</small>
+                    Unlocked <small [hidden]="isAdmin">(read only)</small>
                   </label>
                 </div>
               </fieldset>
@@ -338,10 +338,10 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal"
-            id="closeEditUserModalButton">Close</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal"
+            id="closeEditUserModalButton">Fermer</button>
           <button type="button" (click)="onUpdateAlumni()" [disabled]="editeUserForm.invalid || !isAdmin "
-            class="btn btn-primary">Save changes</button>
+            class="btn btn-dark">Enregistrer</button>
         </div>
       </div>
     </div>

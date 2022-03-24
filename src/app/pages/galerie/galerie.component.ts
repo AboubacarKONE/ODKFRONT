@@ -18,6 +18,7 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./galerie.component.scss']
 })
 export class GaleriephotoComponent implements OnInit {
+  public searcAlum;
   public user: User;
   pageAlumnigalerie:number = 1;
   public mediaAdminOrFormateur:media[];
@@ -73,7 +74,7 @@ export class GaleriephotoComponent implements OnInit {
           this.profileImage = null;
           mediaForm.reset();
           this.sendNotification(NotificationType.SUCCESS, `MEDIA AJOUTEE AVEC SUUCCES`)
-          // this.getAllQuizByCatForum(this.idCat);
+          this.findAllByAlum();
         },
         (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);

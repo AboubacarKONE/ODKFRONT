@@ -12,7 +12,7 @@ import { Subscription } from 'rxjs';
 import { LignePromoService } from './../../service/ligne-promo.service';
 import { Component, Input, OnInit, Output, EventEmitter, INJECTOR, Inject } from '@angular/core';
 import { User } from 'src/app/model/User';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { lignePromotion } from 'src/app/model/lignePromotion';
 
 
@@ -40,7 +40,7 @@ export class AlumnisComponent implements OnInit {
   public ligPromo = new lignePromoModel;
   constructor(private lignePromoService: LignePromoService, private notificationService: NotificationService, private promoService: PromotionService,
     private authenticationService: AuthenticationService, private userService: UserService,
-    private activatedRoute: ActivatedRoute) { }
+    private activatedRoute: ActivatedRoute, private router:Router) { }
 
   ngOnInit(): void {
     this.getUserByPromos(true);

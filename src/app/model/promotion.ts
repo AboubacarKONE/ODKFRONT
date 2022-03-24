@@ -6,5 +6,5 @@ export interface promotion {
  libelle?:string;
  dateDebut?:Date;
  datefin?:Date
- lignePromotions?:User[];
+ lignePromotions?:lignePromotion[];
 }

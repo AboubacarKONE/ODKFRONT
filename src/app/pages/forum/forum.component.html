@@ -6,15 +6,14 @@
             <div class="inner-sidebar">
                 <!-- Inner sidebar header -->
                 <div class="inner-sidebar-header justify-content-center">
-                    <button class="btn btn-info has-icon btn-block" type="button" data-toggle="modal"
+                    <button class="btn btn-dark has-icon btn-block" type="button" data-toggle="modal"
                         data-target="#threadModal" [hidden]="!isAdmin">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="feather feather-plus mr-2">
                             <line x1="12" y1="5" x2="12" y2="19"></line>
                             <line x1="5" y1="12" x2="19" y2="12"></line>
-                        </svg>
-                        NEW DISCUSSION
+                        </svg>                        
                     </button>
                 </div>
                 <!-- /Inner sidebar header -->
@@ -39,7 +38,7 @@
                                                         class="rounded" height="80" width="80" src="{{cate?.photoUrl}}"
                                                         alt="">
                                                     <strong>{{cate?.libelle}}</strong>
-                                                </p>                                               
+                                                </p>
                                             </button>
                                             <!-- <span *ngIf="isAdmin"><i
                                                 class="fa-solid fa-trash-arrow-up ml-2 red-color"
@@ -72,16 +71,16 @@
             <div class="inner-main">
                 <!-- Inner main header -->
                 <div class="inner-main-header">
-                    <select class="custom-select custom-select-sm w-auto mr-1">
+                    <!-- <select class="custom-select custom-select-sm w-auto mr-1">
                         <option selected="">Latest</option>
                         <option value="1">Popular</option>
                         <option value="3">Solved</option>
                         <option value="3">Unsolved</option>
                         <option value="3">No Replies Yet</option>
-                    </select>
-                    <button type="button" class="btn btn-info ml-auto w-auto" data-toggle="modal"
+                    </select> -->
+                    <button type="button" class="btn btn-dark ml-auto w-auto" data-toggle="modal"
                         data-target="#addUserModal">
-                        <i class=""></i>Posez votre question
+                        <i class="fa-solid fa-question"></i>
                     </button>
                     <!-- <span class="input-icon input-icon-sm ml-auto w-auto">
                     <input type="text" class="form-control form-control-sm bg-gray-200 border-gray-200 shadow-none mb-4 mt-4" placeholder="Search forum" />
@@ -111,28 +110,30 @@
                                     <div class="mt-3 font-size-sm">
                                         <p>{{quiz?.description}}</p>
                                     </div>
-                                    <div class=" align-items-right rounded"
-                                        *ngIf="quiz.photoUrl" height="10" width="100">
-                                        <p-image src="{{quiz?.photoUrl}}" alt="Image" width="250" [preview]="true"></p-image>
+                                    <div class=" align-items-right rounded" *ngIf="quiz.photoUrl" height="10"
+                                        width="100">
+                                        <p-image src="{{quiz?.photoUrl}}" alt="Image" width="250" [preview]="true">
+                                        </p-image>
                                         <!-- <img class="rounded" height="150" width="300" src="{{quiz?.photoUrl}}" alt=""> -->
                                     </div>
                                     <!-- <p class="text-muted"><a href="">drewdan</a> replied <span
                                             class="text-secondary font-weight-bold">13 minutes ago</span></p> -->
                                 </div>
                                 <div class="text-muted small text-center align-self-right">
-                                    <span class="d-none d-sm-inline-block"><i class="far fa-eye"></i> 19</span>
-                                    <span><i class="far fa-comment ml-2"></i>3</span>
+                                    <!-- <span class="d-none d-sm-inline-block"><i class="far fa-eye"></i> 19</span>
+                                    <span><i class="far fa-comment ml-2"></i>3</span> -->
                                     <span *ngIf="quiz.user?.id == user.id" (click)="onEditQuiz(quiz)"><i
-                                            class="fas fa-edit ml-2 red-color" style="color: blue;"></i></span>
-                                    <span *ngIf="quiz.user?.id == user.id || isAdmin" (click)="onDeleteQuizForum(quiz.id)" ><i
+                                            class="fas fa-edit ml-2 red-color" style="color: dark;"></i></span>
+                                    <span *ngIf="quiz.user?.id == user.id || isAdmin"
+                                        (click)="onDeleteQuizForum(quiz.id)"><i
                                             class="fa-solid fa-trash-arrow-up ml-2 red-color"
                                             style="color: red;"></i></span>
                                 </div>
                             </div>
                             <br>
-                            <button type="button" class="btn btn-info  float-right" data-toggle="modal"
+                            <button type="button" class="btn btn-dark  float-right" data-toggle="modal"
                                 data-target="#replyQuizModal" (click)="onGetQuizId(quiz.id)">
-                                <i class="fa-solid fa-paper-plane"></i>&nbsp;reply
+                                <i class="fa-solid fa-paper-plane"></i>
                             </button>
                         </div>
 
@@ -149,34 +150,35 @@
                         *ngFor="let response of responseForum | paginate : {itemsPerPage : 8, currentPage: pageResponse, id: 'response'}">
                         <div class="card-body">
                             <div class="media forum-item">
-                                <a href="javascript:void(0)" class="card-link">                                    
+                                <a href="javascript:void(0)" class="card-link">
                                     <img src="{{response.user?.profileImageUrl}}" class="rounded-circle" width="50"
                                         alt="User" />
                                     <!-- <small class="d-block text-center text-muted">{{response.user?.login}}</small> -->
                                 </a>
                                 <div class="media-body ml-3">
                                     <h5 class="text-secondary">{{response.user?.prenom}} {{response.user?.nom}}</h5>
-                                    <small class="text-muted ml-2">1 hour ago</small>
+                                    <!-- <small class="text-muted ml-2">1 hour ago</small> -->
                                     <div class="mt-3 font-size-sm">
                                         <p>{{response?.description}}</p>
                                     </div>
-                                   
-                                    <div class="align-items-center rounded"
-                                        *ngIf="response.photoUrl">
-                                        <p-image src="{{response.user?.profileImageUrl}}" alt="Image" width="250" [preview]="true"></p-image>
+
+                                    <div class="align-items-center rounded" *ngIf="response.photoUrl">
+                                        <p-image src="{{response.photoUrl}}" alt="Image" width="250"
+                                            [preview]="true"></p-image>
                                         <!-- {{response.user?.profileImageUrl}} -->
                                         <!-- <img class="rounded" height="150" width="300" src="{{response?.photoUrl}}"
                                             alt=""> -->
                                     </div>
                                 </div>
                                 <div class="text-muted small text-center">
-                                    <span class="d-none d-sm-inline-block"><i class="far fa-eye"></i> 19</span>
-                                    <span><i class="far fa-comment ml-2"></i> 3</span>
+                                    <!-- <span class="d-none d-sm-inline-block"><i class="far fa-eye"></i> 19</span>
+                                    <span><i class="far fa-comment ml-2"></i> 3</span> -->
                                     <span *ngIf="response.user?.id == user.id" (click)="onEditResponse(response)"><i
-                                        class="fas fa-edit ml-2 red-color" style="color: blue;"></i></span>
-                                <span *ngIf="response.user?.id == user.id || isAdmin" (click)="onDeleteResponseForum(response.id)" ><i
-                                        class="fa-solid fa-trash-arrow-up ml-2 red-color"
-                                        style="color: red;"></i></span>
+                                            class="fas fa-edit ml-2 red-color" style="color: dark;"></i></span>
+                                    <span *ngIf="response.user?.id == user.id || isAdmin"
+                                        (click)="onDeleteResponseForum(response.id)"><i
+                                            class="fa-solid fa-trash-arrow-up ml-2 red-color"
+                                            style="color: red;"></i></span>
                                 </div>
                             </div>
                         </div>
@@ -196,7 +198,7 @@
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                         <form #newCatForum="ngForm" (ngSubmit)="onNewCatForum(newCatForum)">
-                            <div class="modal-header d-flex align-items-center bg-primary text-white">
+                            <div class="modal-header d-flex align-items-center bg-dark text-white">
                                 <h6 class="modal-title mb-0" id="threadModalLabel">Nouvelle categorie de discussion</h6>
                             </div>
                             <div class="modal-body">
@@ -206,28 +208,31 @@
                                         placeholder="entrer le title" required ngModel />
                                 </div>
                                 <!-- <textarea class="form-control summernote" style="display: none;"></textarea> -->
-
                                 <div class="custom-file">
                                     <input type="file" accept="image/*" name="profileImage"
                                         (change)="onProfileImageChange($any($event).target.files[0].name, $any($event).target.files[0])"
                                         class="custom-file-input">
                                     <label class="custom-file-label"><span [hidden]="!fileName">{{fileName}}</span>
-                                        <span [hidden]="!fileName"></span>
+                                        <span [hidden]="fileName">choisir fichier</span>
                                     </label>
                                 </div>
                             </div>
                             <button type="submit" style="display: none;" id="new-catForum-save"></button>
                         </form>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-light" data-dismiss="modal"
+                            <button type="button" class="btn btn-danger" data-dismiss="modal"
                                 id="new-user-close">Cancel</button>
-                            <button type="button" (click)="saveNewCatForum()" class="btn btn-primary"
-                                [disabled]="newCatForum.invalid">Post</button>
+                            <button type="button" (click)="saveNewCatForum()" class="btn btn-dark"
+                                [disabled]="newCatForum.invalid || refreshing">
+                                <i *ngIf="refreshing" class="fas fa-spinner fa-spin"></i>
+                                <span *ngIf="refreshing">Loading...</span>
+                                <span *ngIf="!refreshing">save</span>
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>    
+        </div>
         <!--posez une question-->
         <div class="modal draggable fade bd-example-modal-lg" id="addUserModal" tabindex="-1" role="dialog"
             aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -256,7 +261,7 @@
                                             (change)="onProfileImageChange($any($event).target.files[0].name, $any($event).target.files[0])"
                                             class="custom-file-input">
                                         <label class="custom-file-label"><span [hidden]="!fileName">{{fileName}}</span>
-                                            <span [hidden]="!fileName">Choose File</span>
+                                            <span [hidden]="fileName">Choisir fichier</span>
                                         </label>
                                     </div>
                                 </div>
@@ -265,14 +270,18 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal"
-                            id="new-quiz-close">Close</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"
+                            id="new-quiz-close">Fermer</button>
                         <button type="button" (click)="saveNewQuizForm()" [disabled]="newQuizForm.invalid"
-                            class="btn btn-primary">Posez</button>
+                            class="btn btn-dark">
+                            <i *ngIf="refreshing" class="fas fa-spinner fa-spin"></i>
+                            <span *ngIf="refreshing">Loading...</span>
+                            <span *ngIf="!refreshing">Posez</span>
+                        </button>
                     </div>
                 </div>
             </div>
-        </div>        
+        </div>
         <!--reply question-->
         <div class="modal draggable fade bd-example-modal-lg" id="replyQuizModal" tabindex="-1" role="dialog"
             aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -301,7 +310,7 @@
                                             (change)="onProfileImageChange($any($event).target.files[0].name, $any($event).target.files[0])"
                                             class="custom-file-input">
                                         <label class="custom-file-label"><span [hidden]="!fileName">{{fileName}}</span>
-                                            <span [hidden]="!fileName">Choose File</span>
+                                            <span [hidden]="fileName">Choisir fichier</span>
                                         </label>
                                     </div>
                                 </div>
@@ -310,10 +319,14 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal"
-                            id="new-response-close">Close</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"
+                            id="new-response-close">Fermer</button>
                         <button type="button" (click)="saveNewResponseForm()" [disabled]="newResponseForm.invalid"
-                            class="btn btn-primary">Repondre</button>
+                            class="btn btn-dark">
+                            <i *ngIf="refreshing" class="fas fa-spinner fa-spin"></i>
+                            <span *ngIf="refreshing">Loading...</span>
+                            <span *ngIf="!refreshing">Repondre</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -331,8 +344,8 @@
                                 <div class="form-group">
                                     <label for="description">Description du question</label>
                                     <textarea type="text" name="description" [disabled]="!isAdmin" required
-                                    [(ngModel)]="editQuiz.description" class="form-control"></textarea>
-                                </div>                                
+                                        [(ngModel)]="editQuiz.description" class="form-control"></textarea>
+                                </div>
                                 <div class="input-group mb-2">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">image question </span>
@@ -342,23 +355,28 @@
                                             (change)="onProfileImageChange($any($event).target.files[0].name, $any($event).target.files[0])"
                                             class="custom-file-input">
                                         <label class="custom-file-label"><span [hidden]="!fileName">{{fileName}}</span>
-                                            <span [hidden]="fileName">Choose File</span>
+                                            <span [hidden]="fileName">Choisir fichier</span>
                                         </label>
                                     </div>
-                                </div>                                
+                                </div>
                             </form>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal"
-                            id="closeEditQuizModalButton">Close</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"
+                            id="closeEditQuizModalButton">Fermer</button>
                         <button type="button" (click)="onUpdateQuiz()" [disabled]="editeQuizForm.invalid || !isAdmin "
-                            class="btn btn-primary">Update</button>
+                            class="btn btn-dark">
+                            <i *ngIf="refreshing" class="fas fa-spinner fa-spin"></i>
+                            <span *ngIf="refreshing">Loading...</span>
+                            <span *ngIf="!refreshing">Modifier</span>
+                        </button>
                     </div>
                 </div>
             </div>
-        </div>        
-        <button [hidden]="true" type="button" id="openResponseEdit" data-toggle="modal" data-target="#editResponseModal">
+        </div>
+        <button [hidden]="true" type="button" id="openResponseEdit" data-toggle="modal"
+            data-target="#editResponseModal">
         </button>
         <!--edit response-->
         <div class="modal draggable fade bd-example-modal-lg" id="editResponseModal" tabindex="-1" role="dialog"
@@ -371,29 +389,33 @@
                                 <div class="form-group">
                                     <label for="description">Description du question</label>
                                     <textarea type="text" name="description" required
-                                    [(ngModel)]="editResponse.description" class="form-control"></textarea>
-                                </div>                                
+                                        [(ngModel)]="editResponse.description" class="form-control"></textarea>
+                                </div>
                                 <div class="input-group mb-2">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">image question </span>
                                     </div>
                                     <div class="custom-file">
-                                        <input type="file"  accept="image/*" name="profileImage"
+                                        <input type="file" accept="image/*" name="profileImage"
                                             (change)="onProfileImageChange($any($event).target.files[0].name, $any($event).target.files[0])"
                                             class="custom-file-input">
                                         <label class="custom-file-label"><span [hidden]="!fileName">{{fileName}}</span>
-                                            <span [hidden]="fileName">Choose File</span>
+                                            <span [hidden]="fileName">Choisir fichier</span>
                                         </label>
                                     </div>
-                                </div>                                
+                                </div>
                             </form>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal"
-                            id="closeEditResponseModalButton">Close</button>
-                        <button type="button" (click)="onUpdateResponse()" [disabled]="editeResponseForm.invalid || !isAdmin "
-                            class="btn btn-primary">Update</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"
+                            id="closeEditResponseModalButton">Fermer</button>
+                        <button type="button" (click)="onUpdateResponse()"
+                            [disabled]="editeResponseForm.invalid || !isAdmin " class="btn btn-dark">
+                            <i *ngIf="refreshing" class="fas fa-spinner fa-spin"></i>
+                            <span *ngIf="refreshing">Loading...</span>
+                            <span *ngIf="!refreshing">Modifier</span>
+                        </button>
                     </div>
                 </div>
             </div>

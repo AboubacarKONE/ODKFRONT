@@ -1,7 +1,7 @@
 <div class="mb-3 float-right">
-  <div class="btn-group mr-2">
-    <button [hidden]='!isAdmin' type="button" class="btn btn-info" data-toggle="modal" data-target="#addUserModal">
-      <i class="fa fa-plus"></i>promotion
+  <div class="btn-group">
+    <button [hidden]='!isAdmin' type="button" class="btn btn-dark" data-toggle="modal" data-target="#addUserModal">
+      <i class="fa fa-plus"></i>
     </button>
   </div>
 </div>
@@ -19,29 +19,29 @@
 
           <button class="btn btn-block text-left" type="button">
             <div class="row mb-1 mr-0 custom-border">
-              <!--  Details Utilisateur-->
+              <!--  Details Promotion-->
               <div class="col-md-5 custom-border-right mb-1 mt-1 " [routerLink]="['/alumni',promo.id]">
                 <div class="col">
                   <div class="row">
-                    <div class="col-md-1"><i class="fas fa-info-circle blue-color"></i></div>
+                    <div class="col-md-1"><i class="fas fa-info-circle dark-color"></i></div>
                     <div class="col-md-10 font-weight-bold">{{promo.libelle}}</div>
                   </div>
                   <div class="row">
-                    <div class="col-md-1"><i class="fas fa-calendar-check blue-color"></i></div>
-                    <div class="col-md-10"><strong>date debut :</strong> {{promo.dateDebut}}</div>
+                    <div class="col-md-1"><i class="fas fa-calendar-check dark-color"></i></div>
+                    <div class="col-md-10"><strong>date debut :</strong> {{promo.dateDebut | date:"dd-MM-yyyy"}}</div>
                   </div>
                   <div class="row">
-                    <div class="col-md-1"><i class="fas fa-calendar-check blue-color"></i></div>
-                    <div class="col-md-10"><strong>date fin :</strong> {{promo.datefin}}</div>
+                    <div class="col-md-1"><i class="fas fa-calendar-check dark-color"></i></div>
+                    <div class="col-md-10"><strong>date fin :</strong> {{promo.datefin | date:"dd-MM-yyyy"}}</div>
                   </div>
                 </div>
               </div>
-              <!--  details Promotion-->
+              <!-- formateur par promotion-->
               <div class="col-md-3 custom-border-right mb-1 mt-1" >
-                <div class="col" *ngFor="let formateur of promo.lignePromotions">
-                  <div class="row"  (click)="onSelectUsers(formateur)">
-                    <div class="col-md-1"><i class="fa-solid fa-user blue-color"></i></div>
-                    <div class="col-md-10">{{formateur?.prenom}}&nbsp;&nbsp;{{formateur.nom}}</div>
+                <div class="col" *ngFor="let ligFormateur of promo.lignePromotions">
+                  <div class="row"  (click)="onSelectLignePromotion(ligFormateur)">
+                    <div class="col-md-1"><i class="fa-solid fa-user dark-color"></i></div>
+                    <div class="col-md-10">{{ligFormateur.user?.prenom}}&nbsp;&nbsp;{{ligFormateur.user?.nom}}</div>
                   </div>                  
                 </div>
               </div>
@@ -49,18 +49,18 @@
               <div class="col-md-3 mb-1 mt-1 ">
                 <div class="row">
                   <div class="col-md-4">
-                    <button type="button" class="btn btn-link">
+                    <button type="button" class="btn btn-link-dark" (click)="onEditPromo(promo)" [disabled]="!isAdmin">
                       <i class="fas fa-pencil-alt"></i>&nbsp;Modifier
                     </button>
                   </div>
                   <div class="col-md-4">
-                    <button type="button" class="btn btn-link text-success" (click)="showExcel(promo.id)">
+                    <button type="button" class="btn btn-link text-success" (click)="showExcel(promo.id)" [disabled]="!isFormateur">
                       <i class="fa-solid fa-file-import"></i>&nbsp;importer
                     </button>
                   </div>
                   <div class="col-md-4">
-                    <button type="button" class="btn btn-link" (click)="onGetpromoId(promo.id)" data-toggle="modal"
-                      data-target="#affecterFormModal">
+                    <button type="button" class="btn btn-link-dark" (click)="onGetpromoId(promo.id)" data-toggle="modal"
+                      data-target="#affecterFormModal" [disabled]="!isAdmin">
                       <i class="fa-solid fa-chalkboard-user"></i>&nbsp;Affecter
                     </button>
                   </div>
@@ -113,9 +113,9 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="new-promo-close">Close</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal" id="new-promo-close">Fermer</button>
         <button type="button" (click)="saveNewPromotion()" [disabled]="newPromotionForm.invalid"
-          class="btn btn-primary">Save</button>
+          class="btn btn-dark">Enregistrer</button>
       </div>
     </div>
   </div>
@@ -229,8 +229,8 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-info" (click)="onGetpromoId(selectedUser.id)" data-toggle="modal" data-target="#anotherFormModal" data-dismiss="modal">reassign</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
+          <button type="button" class="btn btn-dark" (click)="onfindFormateurByPromoNot(selectedUser)" data-toggle="modal" data-target="#anotherFormModal" data-dismiss="modal" [disabled]="!isAdmin">réaffecter</button>
         </div>
       </div>
     </div>
@@ -241,7 +241,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title text-center">réaffectation d'un autre formateur à la promotion</h5>
+        <h5 class="modal-title text-center">réaffectation d'un autre formateur</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -252,7 +252,7 @@
             <div class="col-md-11">
               <input type="text" class="form-control" placeholder="chercher un formateur" [(ngModel)]="searchAnotherformateur">
               <div class="autocomplete shadow p-3 mb-5 bg-white rounded" *ngIf="searchAnotherformateur">
-                <p class="p-1" *ngFor="let form of Formateur | filter:searchAnotherformateur" (click)="reassignFormateur(form)">
+                <p class="p-1" *ngFor="let form of formateurNot | filter:searchAnotherformateur" (click)="reassignFormateur(form)">
                   {{form.prenom}} &nbsp;&nbsp;{{form.nom}}&nbsp;&nbsp; {{form.login}}&nbsp;&nbsp;{{form.email}} 
 
                   <!-- <button type="button" class="btn-sm btn-info blue-color"  (click)="selectFormateurClick(form)"><i class="fas fa-plus"></i></button> -->
@@ -264,4 +264,42 @@
       </div>
     </div>
   </div>
+</div>
+<!--edit promotion-->
+<button [hidden]="true" type="button" id="openPromoEdit" data-toggle="modal" data-target="#editPromoModal">
+</button>
+<!--Edit promo-->
+<div class="modal draggable fade bd-example-modal-lg" id="editPromoModal" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="">
+                    <form #editePromoForm="ngForm">
+                      <div class="form-group">
+                        <label for="libelle">libelle</label>
+                        <input type="text" name="libelle"  [(ngModel)]="editPromo.libelle" class="form-control">
+                      </div>
+                      <div class="form-group">
+                        <label for="dateDebut">Date debut</label>
+                        <input type="date" name="dateDebut" [(ngModel)]="editPromo.dateDebut" class="form-control">
+                      </div>
+                      <div class="form-group">
+                        <label for="datefin">Date fin</label>
+                        <input type="date" name="datefin" [(ngModel)]="editPromo.datefin" class="form-control">
+                      </div>                     
+                      <div class="input-group mb-2">
+                      </div>
+                      <button type="submit" style="display: none;" id="new-promo-save"></button>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal"
+                    id="closeEditQuizModalButton">Fermer</button>
+                <button type="button" (click)="onUpdatePromotion()" [disabled]="editePromoForm.invalid || !isAdmin "
+                    class="btn btn-dark">Modifier</button>
+            </div>
+        </div>
+    </div>
 </div>

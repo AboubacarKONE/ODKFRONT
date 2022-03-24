@@ -16,13 +16,13 @@ import { NotificationType } from 'src/app/enum/notification-type.enum';
 export class PageLoginComponent implements OnInit, OnDestroy {
   public loading: boolean = false;
   private subscriptions:Subscription[]=[];  
-  private token:any;
+  private token:any;  
   constructor(private router: Router, private authenticationService: AuthenticationService,
     private notificationService: NotificationService) { }
 
   ngOnInit(): void {
     if(this.authenticationService.isUserloggedIn()){
-      this.router.navigate(['']);
+      this.router.navigate(['statistiques']);
     }else{
       this.router.navigateByUrl('/login');
     }
@@ -36,7 +36,7 @@ export class PageLoginComponent implements OnInit, OnDestroy {
           this.token = response.headers.get(HeaderType.JWT_TOKEN);
           this.authenticationService.saveToken(this.token);
           localStorage.setItem('user', JSON.stringify(response.body));
-          this.router.navigateByUrl('');
+          this.router.navigateByUrl('statistiques');
           this.loading = false;
         },
         (errorResponse: HttpErrorResponse) =>{
