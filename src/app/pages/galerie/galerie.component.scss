@@ -2,4 +2,66 @@
 //     width: 150px;
 //     height: 150px;
 // }
-body{margin-top:20px;}  
+body{margin-top:20px;
+    background:#eee;
+}
+
+
+
+
+
+
+
+.file {
+  border: 1px solid #e7eaec;
+  padding: 0;
+  background-color: #ffffff;
+  position: relative;
+  margin-bottom: 20px;
+  margin-right: 35px;
+}
+.file-manager .hr-line-dashed {
+  margin: 15px 0;
+}
+.file .icon,
+.file .image {
+  height: 100px;
+  overflow: hidden;
+}
+.file .icon {
+  padding: 15px 10px;
+  text-align: center;
+}
+.file-control {
+  color: inherit;
+  font-size: 11px;
+  margin-right: 10px;
+}
+.file-control.active {
+  text-decoration: underline;
+}
+.file .icon i {
+  font-size: 70px;
+  color: #dadada;
+}
+.file .file-name {
+  padding: 10px;
+  background-color: #f8f8f8;
+  border-top: 1px solid #e7eaec;
+}
+.file-name small {
+  color: #676a6c;
+}
+
+.corner {
+  position: absolute;
+  display: inline-block;
+  width: 0;
+  height: 0;
+  line-height: 0;
+  border: 0.6em solid transparent;
+  border-right: 0.6em solid #f1f1f1;
+  border-bottom: 0.6em solid #f1f1f1;
+  right: 0em;
+  bottom: 0em;
+}

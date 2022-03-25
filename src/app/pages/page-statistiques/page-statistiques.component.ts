@@ -23,82 +23,82 @@ export class PageStatistiquesComponent implements OnInit {
   public isAdmin: boolean;
   public isFormateur: boolean;
   public isAlumni: boolean;
-  public isAdminOrFormateur:boolean;
+  public isAdminOrFormateur: boolean;
   public user: User;
-  pageAlumnigalerie:number = 1;
-  public mediaAdminOrFormateur:media[];
-  public mediaAlum:media[];
-  public mediaByUser:media[];
+  pageAlumnigalerie: number = 1;
+  public mediaAdminOrFormateur: media[];
+  public mediaAlum: media[];
+  public mediaByUser: media[];
   public fileName: string;
   public profileImage: File;
   private subscriptions: Subscription[] = [];
   responsiveOptions: { breakpoint: string; numVisible: number; numScroll: number; }[];
-  
-nbreAdmin: any;
-nbreAlumni: any;
-nbreFormateur: any;
-nbrePromo: any;
 
-admin: any = [];
-alumni: any = [];
-formateur: any = [];
-promo: any = [];
+  nbreAdmin: any;
+  nbreAlumni: any;
+  nbreFormateur: any;
+  nbrePromo: any;
 
-adminstat: any = [];
-alumnistat: any = [];
-formateurstat: any = [];
+  admin: any = [];
+  alumni: any = [];
+  formateur: any = [];
+  promo: any = [];
 
-pieChartOptions: ChartOptions
-pieChartLabels: Label[]
-pieChartData: SingleDataSet
-pieChartType: ChartType
-pieChartLegend = true;
-pieChartPlugins: any
+  adminstat: any = [];
+  alumnistat: any = [];
+  formateurstat: any = [];
 
-ref: DynamicDialogRef | undefined;
+  pieChartOptions: ChartOptions
+  pieChartLabels: Label[]
+  pieChartData: SingleDataSet
+  pieChartType: ChartType
+  pieChartLegend = true;
+  pieChartPlugins: any
+
+  ref: DynamicDialogRef | undefined;
 
   constructor(public userService: UserService,
-              private authenticationService: AuthenticationService,
-              public galerieService: GalerieService,
-              private notificationService: NotificationService,
-              public dialoService: DialogService,
-              ) {
+    private authenticationService: AuthenticationService,
+    public galerieService: GalerieService,
+    private notificationService: NotificationService,
+    public dialoService: DialogService,
+  ) {
     this.responsiveOptions = [
       {
-          breakpoint: '1024px',
-          numVisible: 3,
-          numScroll: 3
+        breakpoint: '1024px',
+        numVisible: 3,
+        numScroll: 3
       },
       {
-          breakpoint: '768px',
-          numVisible: 2,
-          numScroll: 2
+        breakpoint: '768px',
+        numVisible: 2,
+        numScroll: 2
       },
       {
-          breakpoint: '560px',
-          numVisible: 1,
-          numScroll: 1
+        breakpoint: '560px',
+        numVisible: 1,
+        numScroll: 1
       }
-  ];
-   }
+    ];
+  }
 
   ngOnInit(): void {
     this.isFormateur = this.authenticationService.isFormateur;
     this.isAdmin = this.authenticationService.isAdmin;
     this.isAlumni = this.authenticationService.isAlumni;
-    this.isAdminOrFormateur =this.authenticationService.isAdminOrFormateur;
-    this.userService.getUsers().subscribe((data: any)=>{
-      for(let i=0; i< data.length; i++){
+    this.isAdminOrFormateur = this.authenticationService.isAdminOrFormateur;
+    this.userService.getUsers().subscribe((data: any) => {
+      for (let i = 0; i < data.length; i++) {
 
-        if(data[i].role == "ROLE_SUPER_ADMIN" || data[i].role == "ROLE_ADMIN"){
+        if (data[i].role == "ROLE_SUPER_ADMIN" || data[i].role == "ROLE_ADMIN") {
           this.admin.push(data[i]);
         }
 
-        if(data[i].role == "ROLE_ALUM" ){
+        if (data[i].role == "ROLE_ALUM") {
           this.alumni.push(data[i]);
         }
 
-        if(data[i].role == "ROLE_FORMATEUR" ){
+        if (data[i].role == "ROLE_FORMATEUR") {
           this.formateur.push(data[i]);
         }
 
@@ -110,31 +110,31 @@ ref: DynamicDialogRef | undefined;
 
     this.getGraphe();
 
-    
+
     this.user = this.authenticationService.getUserFromLocalCache();
-    this.findAllByAdminAndFormateur();    
+    this.findAllByAdminAndFormateur();
     this.findAllMediaByUserId();
-    this.findAllByAlum();
+    // this.findAllByAlum();
   }
-  findAllByAlum() {
-    this.subscriptions.push(
-      this.galerieService.findAllByAlum().subscribe(
-        (response: media[]) => {
-          this.mediaAlum = response;
-          // console.log(this.mediaAlum);          
-        },
-        (errorResponse: HttpErrorResponse) => {
-          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
-        }
-      )
-    );
-  }
+  // findAllByAlum() {
+  //   this.subscriptions.push(
+  //     this.galerieService.findAllByAlum().subscribe(
+  //       (response: media[]) => {
+  //         this.mediaAlum = response;
+  //         // console.log(this.mediaAlum);          
+  //       },
+  //       (errorResponse: HttpErrorResponse) => {
+  //         this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+  //       }
+  //     )
+  //   );
+  // }
   findAllMediaByUserId() {
     this.subscriptions.push(
       this.galerieService.findAllMediaByUserId(this.user.id).subscribe(
         (response: media[]) => {
           this.mediaByUser = response;
-           console.log("content media",this.mediaByUser);          
+          console.log("content media", this.mediaByUser);
         },
         (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
@@ -143,7 +143,7 @@ ref: DynamicDialogRef | undefined;
     );
   }
 
-  
+
   findAllByAdminAndFormateur() {
     this.subscriptions.push(
       this.galerieService.findAllByAdminAndFormateur().subscribe(
@@ -158,57 +158,66 @@ ref: DynamicDialogRef | undefined;
     );
   }
 
-  onScroll(){
+  onScroll() {
     console.log('scrolled');
-    
+
   }
 
 
   onNewMediaForum(mediaForm: NgForm) {
-    if(this.profileImage == null){
-      this.sendNotification(NotificationType.ERROR, `VEUILLEZ SELECTIONNER UN MEDIA`)
-    }
-    const formData = new FormData();
-    formData.append('titre', mediaForm.value.titre);
-    formData.append('idUser', JSON.stringify(this.user.id));
-    formData.append('mediaImage', this.profileImage);
-    // console.log(formData);
-    this.subscriptions.push(
-      this.galerieService.addNewMedia(formData).subscribe(
-        (response: media) => {
-          this.clickButton('new-media-close');
-          this.fileName = null;
-          this.profileImage = null;
-          mediaForm.reset();
-          this.sendNotification(NotificationType.SUCCESS, `MEDIA AJOUTEE AVEC SUUCCES`)
-          // this.getAllQuizByCatForum(this.idCat);
-        },
-        (errorResponse: HttpErrorResponse) => {
-          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
-          this.profileImage = null;
-        }
+    if (this.profileImage == null) {
+      this.sendNotification(NotificationType.ERROR, `VEUILLEZ SELECTIONNER UN MEDIA`)    }
+    if (mediaForm.value.titre) {
+      const formData = new FormData();
+      formData.append('titre', mediaForm.value.titre);
+      formData.append('idUser', JSON.stringify(this.user.id));
+      formData.append('mediaImage', this.profileImage);
+      // console.log(formData);
+      this.subscriptions.push(
+        this.galerieService.addNewMedia(formData).subscribe(
+          (response: media) => {
+            this.clickButton('new-media-close');
+            this.fileName = null;
+            this.profileImage = null;
+            mediaForm.reset();
+            this.sendNotification(NotificationType.SUCCESS, `MEDIA AJOUTEE AVEC SUCCES`)
+            // this.getAllQuizByCatForum(this.idCat);
+          },
+          (errorResponse: HttpErrorResponse) => {
+            this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+            this.profileImage = null;
+          }
+        )
       )
-    )
+    } else if (!mediaForm.value.titre) {
+
+      this.sendNotification(NotificationType.ERROR, `Veuillez entrer une description pour l'activité `)
+    }
+
   }
   // clickButton(arg0: string) {
   //   throw new Error('Method not implemented.');
   // }
-  sendNotification(ERROR: NotificationType, arg1: string) {
-    throw new Error('Method not implemented.');
+  private sendNotification(notificationType: NotificationType, message: string): void {
+    if (message) {
+      this.notificationService.notify(notificationType, message);
+    } else {
+      this.notificationService.notify(notificationType, 'Une erreur s\'est produite. Please try again.');
+    }
   }
 
-  getGraphe(){
-    this.userService.getUsers().subscribe((data: any)=>{
-      for(let i=0; i< data.length; i++){
-        if(data[i].role == "ROLE_SUPER_ADMIN" || data[i].role == "ROLE_ADMIN"){
+  getGraphe() {
+    this.userService.getUsers().subscribe((data: any) => {
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].role == "ROLE_SUPER_ADMIN" || data[i].role == "ROLE_ADMIN") {
           this.adminstat.push(data[i]);
         }
 
-        if(data[i].role == "ROLE_ALUM" ){
+        if (data[i].role == "ROLE_ALUM") {
           this.alumnistat.push(data[i]);
         }
 
-        if(data[i].role == "ROLE_FORMATEUR" ){
+        if (data[i].role == "ROLE_FORMATEUR") {
           this.formateurstat.push(data[i]);
         }
       }
@@ -216,15 +225,15 @@ ref: DynamicDialogRef | undefined;
         responsive: true,
       };
       this.pieChartLabels = [['Alumnis'], ['Formateurs'], 'Administrateurs'];
-      this.pieChartData = [ this.alumnistat.length, this.formateurstat.length,  this.adminstat.length];
-      this.pieChartType= 'pie';
+      this.pieChartData = [this.alumnistat.length, this.formateurstat.length, this.adminstat.length];
+      this.pieChartType = 'pie';
       this.pieChartLegend = true;
       this.pieChartPlugins = [];
     })
-  
- 
+
+
   }
-   
+
   barChartOptions: ChartOptions = {
     responsive: true,
   };
@@ -242,7 +251,7 @@ ref: DynamicDialogRef | undefined;
     this.clickButton('new-catForum-save')
   }
 
-  
+
 
   public onProfileImageChange(fileName: string, profileImage: File): void {
     this.fileName = fileName;
@@ -250,7 +259,7 @@ ref: DynamicDialogRef | undefined;
     console.log(fileName, profileImage);
   }
 
-  show(id: any){
+  show(id: any) {
     this.userService.setImage(id);
     this.ref = this.dialoService.open(ViewimageComponent, {
       header: 'Détail activité',
@@ -258,8 +267,8 @@ ref: DynamicDialogRef | undefined;
       // contentStyle: {"max-height": "500px", "overflow": "auto"},
       // baseZIndex: 10000
     });
-    
-    
+
+
 
   }
 

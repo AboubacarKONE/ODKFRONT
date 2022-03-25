@@ -18,16 +18,23 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./galerie.component.scss']
 })
 export class GaleriephotoComponent implements OnInit {
+  public test:string;
   public searcAlum;
   public user: User;
   pageAlumnigalerie:number = 1;
   public mediaAdminOrFormateur:media[];
   public mediaAlum:media[];
   public mediaByUser:media[];
+  // public mediaByUser:media[];
   public fileName: string;
   public profileImage: File;
   private subscriptions: Subscription[] = [];
   responsiveOptions: { breakpoint: string; numVisible: number; numScroll: number; }[];
+  trie = [
+    { id: 1, name: "Tout" },
+    { id: 2, name: "semaine dernière" },
+    { id: 3, name: "mois dernier" }
+  ];
   constructor(public galerieService: GalerieService, private authenticationService: AuthenticationService, private notificationService: NotificationService) 
   {
     this.responsiveOptions = [
@@ -51,18 +58,41 @@ export class GaleriephotoComponent implements OnInit {
 
   ngOnInit(): void {
     this.user = this.authenticationService.getUserFromLocalCache();
-    this.findAllByAdminAndFormateur();    
-    this.findAllMediaByUserId();
+    // this.getMediaByWeek();
+    // this.findAllByAdminAndFormateur();    
+    // this.findAllMediaByUserId();
+    
+    // this.getMediaByMonth()
+    this.onckick(this.test)
+            
+  }
+  onckick(tr:string){
+  this.test = tr; 
+  if(this.test == null){
     this.findAllByAlum();
+  }else if(this.test == '1'){
+    this.findAllByAlum();
+  }
+  else if(this.test == '2' ){
+    this.getMediaByWeek();
+  }else if(this.test == '3'){
+    this.getMediaByMonth()
+  }   
+  }
+ 
+  public UpdateProfileImage(){
+    this.clickButton('profile-image-input')
   }
 
 
-  onNewMediaForum(mediaForm: NgForm) {
+  onNewMediaForum() {
     if(this.profileImage == null){
       this.sendNotification(NotificationType.ERROR, `VEUILLEZ SELECTIONNER UN MEDIA`)
     }
     const formData = new FormData();
-    formData.append('titre', mediaForm.value.titre);
+    // if( mediaForm.value.titre != null){
+    //   formData.append('titre', mediaForm.value.titre);
+    // }   
     formData.append('idUser', JSON.stringify(this.user.id));
     formData.append('mediaImage', this.profileImage);
     // console.log(formData);
@@ -72,7 +102,7 @@ export class GaleriephotoComponent implements OnInit {
           this.clickButton('new-media-close');
           this.fileName = null;
           this.profileImage = null;
-          mediaForm.reset();
+          // mediaForm.reset();
           this.sendNotification(NotificationType.SUCCESS, `MEDIA AJOUTEE AVEC SUUCCES`)
           this.findAllByAlum();
         },
@@ -83,24 +113,24 @@ export class GaleriephotoComponent implements OnInit {
       )
     )
   }
-  public findAllByAdminAndFormateur() {
-    this.subscriptions.push(
-      this.galerieService.findAllByAdminAndFormateur().subscribe(
-        (response: media[]) => {
-          this.mediaAdminOrFormateur = response;
-          // console.log(this.mediaAdminOrFormateur);          
-        },
-        (errorResponse: HttpErrorResponse) => {
-          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
-        }
-      )
-    );
-  }
+  // public findAllByAdminAndFormateur() {
+  //   this.subscriptions.push(
+  //     this.galerieService.findAllByAdminAndFormateur().subscribe(
+  //       (response: media[]) => {
+  //         this.mediaAdminOrFormateur = response;
+  //         // console.log(this.mediaAdminOrFormateur);          
+  //       },
+  //       (errorResponse: HttpErrorResponse) => {
+  //         this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+  //       }
+  //     )
+  //   );
+  // }
   public findAllByAlum() {
     this.subscriptions.push(
       this.galerieService.findAllByAlum().subscribe(
         (response: media[]) => {
-          this.mediaAlum = response;
+          this.mediaAlum = response.sort();
           // console.log(this.mediaAlum);          
         },
         (errorResponse: HttpErrorResponse) => {
@@ -109,11 +139,24 @@ export class GaleriephotoComponent implements OnInit {
       )
     );
   }
-  public findAllMediaByUserId() {
+  // public findAllMediaByUserId() {
+  //   this.subscriptions.push(
+  //     this.galerieService.findAllMediaByUserId(this.user.id).subscribe(
+  //       (response: media[]) => {
+  //         this.mediaByUser = response;
+  //          console.log("content media",this.mediaByUser);          
+  //       },
+  //       (errorResponse: HttpErrorResponse) => {
+  //         this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+  //       }
+  //     )
+  //   );
+  // }
+  public getMediaByWeek() {
     this.subscriptions.push(
-      this.galerieService.findAllMediaByUserId(this.user.id).subscribe(
+      this.galerieService.getMediaByWeek().subscribe(
         (response: media[]) => {
-          this.mediaByUser = response;
+          this.mediaAlum = response;
            console.log("content media",this.mediaByUser);          
         },
         (errorResponse: HttpErrorResponse) => {
@@ -122,9 +165,22 @@ export class GaleriephotoComponent implements OnInit {
       )
     );
   }
-  saveNewMedia() {
-    this.clickButton('new-catForum-save')
+  public getMediaByMonth() {
+    this.subscriptions.push(
+      this.galerieService.getMediaByMonth().subscribe(
+        (response: media[]) => {
+          this.mediaAlum = response;
+           console.log("content media",this.mediaByUser);          
+        },
+        (errorResponse: HttpErrorResponse) => {
+          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+        }
+      )
+    );
   }
+  // saveNewMedia() {
+  //   this.clickButton('profile-image-input')
+  // }
   public onProfileImageChange(fileName: string, profileImage: File): void {
     this.fileName = fileName;
     this.profileImage = profileImage;

@@ -1,57 +1,40 @@
-
-<div class="mb-3 float-right">
-  <div class="btn-group">
-    <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#addUserModal">
+<div class="mb-1">
+  <div class="btn-group ">
+    <button type="button" class="btn btn-dark" (click)="UpdateProfileImage()">
       <i class="fa fa-plus"></i>&nbsp;<i class="fa-solid fa-image"></i>
+    </button>
+    <button type="button" class="btn btn-dark ml-1">
+      <select class="custom-select custom-select-sm w-auto mr-1 form-control" [(ngModel)]="test" (click)="onckick(test)">
+        <!-- <option [value]="null">Triez</option> -->
+        <option *ngFor="let tr of trie" [ngValue]="tr.id">{{ tr?.name }}</option>
+    </select>
     </button>
   </div>
 </div>
-
-<!-- <div class="card-body row, m-3,"> -->
-<div class="row">
-  <div  *ngFor="let im of mediaAlum | paginate : {itemsPerPage : 12, currentPage: pageAlumnigalerie}" >
-    <!-- <img
-      src="{{im.photoUrl}}"
-      class="w-100 width:100 shadow-1-strong rounded mb-4"
-      alt=""
-    /> -->
-    <p-image src="{{im.photoUrl}}" alt="Image" width="190" [preview]="true">
-    </p-image>
-  </div>  
-</div>
-<pagination-controls (pageChange)=" pageAlumnigalerie = $event" ></pagination-controls>
-<!-- </div> -->
-<div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="threadModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <form #newMediaForum="ngForm" (ngSubmit)="onNewMediaForum(newMediaForum)">
-        <div class="modal-header d-flex align-items-center bg-dark text-white">
-          <h6 class="modal-title mb-0" id="threadModalLabel">Nouvelle Media</h6>
+<!--galery-->
+<div class=" ml-3 animated fadeInRight">
+  <div class="row">
+    <div *ngFor="let im of mediaAlum | paginate : {itemsPerPage : 12, currentPage: pageAlumnigalerie}">
+      <div class="file">
+        <span class="corner"></span>
+        <div class="image">
+          <p-image src="{{im.photoUrl}}" alt="Image" width="190" [preview]="true">
+          </p-image>
         </div>
-        <div class="modal-body">
-          <div class="form-group">
-            <label for="threadTitle">Titre</label>
-            <input type="text" class="form-control" id="threadTitle" name="titre" placeholder="entrer le details de l'image"
-              required ngModel />
-          </div>
-          <!-- <textarea class="form-control summernote" style="display: none;"></textarea> -->
-
-          <div class="custom-file">
-            <input type="file" accept="image/*" name="profileImage"
-              (change)="onProfileImageChange($any($event).target.files[0].name, $any($event).target.files[0])"
-              class="custom-file-input">
-            <label class="custom-file-label"><span [hidden]="!fileName">{{fileName}}</span>
-              <span [hidden]="!fileName"></span>
-            </label>
-          </div>
+        <div class="file-name">
+          <span *ngIf="im.titre">{{im.titre}}</span>
+          <br>
+          <small>ajoutée: {{im.date | date:"dd-MM-yyyy"}}</small>
         </div>
-        <button type="submit" style="display: none;" id="new-catForum-save"></button>
-      </form>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal" id="new-media-close">retour</button>
-        <button type="button" (click)="saveNewMedia()" class="btn btn-dark">Poster</button>
       </div>
     </div>
   </div>
 </div>
+<pagination-controls (pageChange)=" pageAlumnigalerie = $event"></pagination-controls>
+
+<!--end-->
+      <form enctype="multipart/form-data" style="display:none;">
+        <input type="file"
+          (change)="onProfileImageChange($any($event).target.files[0].name, $any($event).target.files[0]); onNewMediaForum()"
+         name="profile-image-input" id="profile-image-input" placeholder="file" accept="image/*" />
+    </form>

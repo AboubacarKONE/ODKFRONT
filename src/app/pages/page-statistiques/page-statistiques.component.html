@@ -1,111 +1,113 @@
-<div class="overflow-scroll">
-  <div [hidden]="!isAdminOrFormateur" class="container" style="margin-top: 20px;">
-    <div class="row">
-      <div [hidden]="!isAdmin" class="col-lg-2 col-md-6 col-xs-12 text-stat"
-        style="border-radius: 10px; border: 2px solid; border-color: #FF6600;">
-  
-        <div class="widget-icon green">
-          <i class="fa fa-users"></i>
+<p-tabView>
+  <p-tabPanel *ngIf="isAdminOrFormateur" header="Statistiques">
+    <div  class="container" style="margin-top: 20px;">
+      <div class="row">
+        <div [hidden]="!isAdmin" class="col-lg-2 col-md-6 col-xs-12 text-stat"
+          style="border-radius: 10px; border: 2px solid; border-color: #FF6600;">
+
+          <div class="widget-icon green">
+            <i class="fa fa-users"></i>
+          </div>
+          <div class="title">{{nbreAdmin}}</div>
+          <div class="comment">Administrateurs</div>
         </div>
-        <div class="title">{{nbreAdmin}}</div>
-        <div class="comment">Administrateurs</div>
-      </div>
-      <div class="col-lg-1 col-md-1 col-xs-12"></div>
-      <div class="col-lg-2 col-md-2 col-xs-12 text-stat"
-        style="border-radius: 10px; border: 2px solid; border-color: #FF6600;">
-        <div class="widget-icon red ">
-          <i class="fas fa-chalkboard-teacher"></i>
+        <div class="col-lg-1 col-md-1 col-xs-12"></div>
+        <div class="col-lg-2 col-md-2 col-xs-12 text-stat"
+          style="border-radius: 10px; border: 2px solid; border-color: #FF6600;">
+          <div class="widget-icon red ">
+            <i class="fas fa-chalkboard-teacher"></i>
+          </div>
+          <div class="title">{{nbreFormateur}}</div>
+          <div class="comment">Formateurs</div>
+
         </div>
-        <div class="title">{{nbreFormateur}}</div>
-        <div class="comment">Formateurs</div>
-  
-      </div>
-      <div class="col-lg-1 col-md-1 col-xs-12"></div>
-      <div class="col-lg-2 col-md-2 col-xs-6 text-stat"
-        style="border-radius: 10px; border: 2px solid; border-color: #FF6600;">
-        <div class="widget-icon orange">
-          <i class="fas fa-user-friends"></i>
+        <div class="col-lg-1 col-md-1 col-xs-12"></div>
+        <div class="col-lg-2 col-md-2 col-xs-6 text-stat"
+          style="border-radius: 10px; border: 2px solid; border-color: #FF6600;">
+          <div class="widget-icon orange">
+            <i class="fas fa-user-friends"></i>
+          </div>
+          <div class="title">{{nbreAlumni}}</div>
+          <div class="comment">Alumni</div>
         </div>
-        <div class="title">{{nbreAlumni}}</div>
-        <div class="comment">Alumni</div>
-      </div>
-      <div class="col-lg-1 col-md-1 col-xs-12"></div>
-      <div class="col-lg-2 col-md-2 col-xs-12 text-stat"
-        style="border-radius: 10px; border: 2px solid; border-color: #FF6600;">
-  
-        <div class="widget-icon blue">
-          <i class="fas fa-graduation-cap"></i>
+        <div class="col-lg-1 col-md-1 col-xs-12"></div>
+        <div class="col-lg-2 col-md-2 col-xs-12 text-stat"
+          style="border-radius: 10px; border: 2px solid; border-color: #FF6600;">
+
+          <div class="widget-icon blue">
+            <i class="fas fa-graduation-cap"></i>
+          </div>
+          <div class="title"></div>
+          <div class="comment">Promotions</div>
         </div>
-        <div class="title"></div>
-        <div class="comment">Promotions</div>
-      </div>
-    </div><br><br><br>
-    <div class="row">
-      <div class="col-lg-6 col-md-6 col-xs-6">
-        <canvas baseChart [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType"
-          [options]="pieChartOptions" [plugins]="pieChartPlugins" [legend]="pieChartLegend">
-        </canvas>
-      </div>
-      <div class="col-lg-6 col-md-6 col-xs-6">
-        <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
-          [plugins]="barChartPlugins" [legend]="barChartLegend" [chartType]="barChartType">
-        </canvas>
+      </div><br><br><br>
+      <div class="row">
+        <div class="col-lg-6 col-md-6 col-xs-6">
+          <canvas baseChart [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType"
+            [options]="pieChartOptions" [plugins]="pieChartPlugins" [legend]="pieChartLegend">
+          </canvas>
+        </div>
+        <div class="col-lg-6 col-md-6 col-xs-6">
+          <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
+            [plugins]="barChartPlugins" [legend]="barChartLegend" [chartType]="barChartType">
+          </canvas>
+        </div>
       </div>
     </div>
-  </div>
-  <!-- partie alumni -->
+  </p-tabPanel>
+  <p-tabPanel header="activites">
+<!-- partie alumni -->
   
-  <div [hidden]="!isAdmin" class="mb-3 float-right">
-    <div class="btn-group mr-2" [hidden]="!isAdmin">
-      <!-- <form class="form-inline my-2 my-lg-0 justify-content-center">
-                  <input name="searchTerm" #searchInput="ngModel" class="form-control mr-sm-2" ngModel type="search"
-                      placeholder="Search users...">
-              </form> -->
-      <button type="button" class="btn btn-info" data-toggle="modal" data-target="#addUserModal">
-        <i class="fa fa-plus"></i>Nouveau
-      </button>
-    </div>
+<div [hidden]="!isAdmin" class="mb-3 float-right">
+  <div class="btn-group mr-2" [hidden]="!isAdmin">
+    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#addUserModal">
+      <i class="fa fa-plus"></i>Nouveau
+    </button>
   </div>
-  <div class="card-body row, m-3,">
-    <p-carousel [value]="mediaByUser" styleClass="custom-carousel" [numVisible]="3" [numScroll]="1" [circular]="true"
-      [autoplayInterval]="3000" [responsiveOptions]="responsiveOptions">
-      <ng-template let-media pTemplate="item">
-        <!-- <h5>{{media.titre}}</h5> -->
-        <div class="product-item">
-          <div class="product-item-content">
-            <div class="p-mb-3">
-            </div>
-            <div>
-              <h4 class="p-mb-1">
-                <img class="card-img-top" height="150" width="150" src="{{media?.photoUrl}}" alt="" #nav>
-              </h4>
-            </div>
+</div>
+<div class="card-body row, m-3,">
+  <p-carousel [value]="mediaByUser" styleClass="custom-carousel" [numVisible]="3" [numScroll]="1" [circular]="true"
+    [autoplayInterval]="3000" [responsiveOptions]="responsiveOptions">
+    <ng-template let-media pTemplate="item">
+      <!-- <h5>{{media.titre}}</h5> -->
+      <div class="product-item">
+        <div class="product-item-content">
+          <div class="p-mb-3">
+          </div>
+          <div>
+            <h4 class="p-mb-1 media img-thumbnail">
+              <img class="card-img-top" height="150" width="150" src="{{media?.photoUrl}}" alt="" #nav>
+            </h4>
           </div>
         </div>
-      </ng-template>
-    </p-carousel>
-  </div>
-  <div [hidden]="!isAlumni" class="card-body">
-    <p-carousel [value]="mediaAdminOrFormateur" [numVisible]="3" [numScroll]="3" [circular]="false"
-      [responsiveOptions]="responsiveOptions">
-      <ng-template pTemplate="header">
-      </ng-template>
-      <ng-template let-media pTemplate="item">
-        <div class="product-item">
-          <div class="product-item-content">
-            <div class="card" style="width: 18rem;" (click)="show(media)">
-              <img class="card-img-top" src="{{media?.photoUrl}}" alt="image activite" style="height: 200px;">
-              <div class="card-body">
-                <p class="card-text">{{media?.titre}}</p>
-              </div>
-            </div>
-  
+      </div>
+    </ng-template>
+  </p-carousel>
+</div>
+<div class="card-body">
+  <p-carousel [value]="mediaAdminOrFormateur" [numVisible]="3" [numScroll]="3" [circular]="false"
+    [responsiveOptions]="responsiveOptions">
+    <ng-template pTemplate="header">
+    </ng-template>
+    <ng-template let-media pTemplate="item">
+      <div class="product-item">
+        <div class="product-item-content">
+          <div class="card"  style="width: 18rem;" (click)="show(media)">
+            <img class="card-img-top" src="{{media?.photoUrl}}" alt="image activite" style="height: 100px;">
+            <!-- <div class="card-body">
+              <p class="card-text">{{media?.titre}}</p>
+            </div> -->
           </div>
+
         </div>
-      </ng-template>
-    </p-carousel>
-  </div>
-  
+      </div>
+    </ng-template>
+  </p-carousel>
+</div>
+
+  </p-tabPanel>
+  </p-tabView>
+
   <!-- <pagination-controls (pageChange)=" pageAlumnigalerie = $event" id="galerieview" ></pagination-controls> -->
   <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="threadModalLabel"
     aria-hidden="true">
@@ -122,7 +124,7 @@
                 name="titre" placeholder="entrer les details de l'image" required ngModel></textarea>
             </div>
             <!-- <textarea class="form-control summernote" style="display: none;"></textarea> -->
-  
+
             <div class="custom-file">
               <input type="file" accept="image/*" name="profileImage"
                 (change)="onProfileImageChange($any($event).target.files[0].name, $any($event).target.files[0])"
@@ -141,4 +143,3 @@
       </div>
     </div>
   </div>
-</div>

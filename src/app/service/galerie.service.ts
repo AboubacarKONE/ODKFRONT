@@ -23,6 +23,12 @@ export class GalerieService {
   public findAllMediaByUserId(id:number): Observable<media[]> {
     return this.http.get<media[]>(`${this.host}/odkConnect/media/listMediaByUser/${id}`)
   }
+  public getMediaByWeek(): Observable<media[]> {
+    return this.http.get<media[]>(`${this.host}/odkConnect/media/lastWeek`)
+  }
+  public getMediaByMonth(): Observable<media[]> {
+    return this.http.get<media[]>(`${this.host}/odkConnect/media/lastMonth`)
+  }
 
   // public addPhoto(galerie: any, image: File): Observable<any> {
   //   const formData: FormData = new FormData();
