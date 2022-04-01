@@ -37,12 +37,11 @@ export class PageInscriptionAlumniComponent implements OnInit {
           this.log.action= `creation de compte pour ${response.login}`;
           this.log.tableName = audit.AJOUTER
           this.log.createdBy = response;                 
-          this.logService.saveLog(this.log).subscribe(
-            (audit: Log) => {
+          this.logService.saveLog(this.log);            
               this.loading = false;
               this.sendNotification(NotificationType.SUCCESS, `Un nouveau compte a été créé pour ${response.prenom}.
               Please vérifiez votre E-mail pour le mot de passe pour vous connecter.`);
-            });       
+              
         },
         (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
