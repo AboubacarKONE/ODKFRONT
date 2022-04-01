@@ -1,3 +1,4 @@
+import { ChangerModp } from './../../model/changerMdp';
 import { User } from './../../model/User';
 import { AuthenticationService } from './../../service/authentication.service';
 import { Component, OnInit } from '@angular/core';
@@ -9,6 +10,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ChangerMotDePasseComponent implements OnInit {
   public user:User;
+  public mtdp:ChangerModp
   constructor(private authenticationService: AuthenticationService) { }
 
   ngOnInit(): void {

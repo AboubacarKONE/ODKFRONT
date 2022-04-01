@@ -1,6 +1,6 @@
 <p-tabView>
   <p-tabPanel *ngIf="isAdminOrFormateur" header="Statistiques">
-    <div  class="container" style="margin-top: 20px;">
+    <div class="container" style="margin-top: 20px;">
       <div class="row">
         <div [hidden]="!isAdmin" class="col-lg-2 col-md-6 col-xs-12 text-stat"
           style="border-radius: 10px; border: 2px solid; border-color: #FF6600;">
@@ -56,90 +56,110 @@
     </div>
   </p-tabPanel>
   <p-tabPanel header="activites">
-<!-- partie alumni -->
-  
-<div [hidden]="!isAdmin" class="mb-3 float-right">
-  <div class="btn-group mr-2" [hidden]="!isAdmin">
-    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#addUserModal">
-      <i class="fa fa-plus"></i>Nouveau
-    </button>
-  </div>
-</div>
-<div class="card-body row, m-3,">
-  <p-carousel [value]="mediaByUser" styleClass="custom-carousel" [numVisible]="3" [numScroll]="1" [circular]="true"
-    [autoplayInterval]="3000" [responsiveOptions]="responsiveOptions">
-    <ng-template let-media pTemplate="item">
-      <!-- <h5>{{media.titre}}</h5> -->
-      <div class="product-item">
-        <div class="product-item-content">
-          <div class="p-mb-3">
-          </div>
-          <div>
-            <h4 class="p-mb-1 media img-thumbnail">
-              <img class="card-img-top" height="150" width="150" src="{{media?.photoUrl}}" alt="" #nav>
-            </h4>
-          </div>
-        </div>
+    <!-- partie alumni -->
+
+    <div [hidden]="!isAdmin" class="mb-3 float-right">
+      <div class="btn-group mr-2" [hidden]="!isAdmin">
+        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#addUserModal">
+          <i class="fa fa-plus"></i>Nouveau
+        </button>
       </div>
-    </ng-template>
-  </p-carousel>
-</div>
-<div class="card-body">
-  <p-carousel [value]="mediaAdminOrFormateur" [numVisible]="3" [numScroll]="3" [circular]="false"
-    [responsiveOptions]="responsiveOptions">
-    <ng-template pTemplate="header">
-    </ng-template>
-    <ng-template let-media pTemplate="item">
-      <div class="product-item">
-        <div class="product-item-content">
-          <div class="card"  style="width: 18rem;" (click)="show(media)">
-            <img class="card-img-top" src="{{media?.photoUrl}}" alt="image activite" style="height: 100px;">
-            <!-- <div class="card-body">
+    </div>
+    <div class="card-body row, m-3,">
+      <p-carousel [value]="mediaByUser" styleClass="custom-carousel" [numVisible]="3" [numScroll]="1" [circular]="true"
+        [autoplayInterval]="3000" [responsiveOptions]="responsiveOptions">
+        <ng-template let-media pTemplate="item">
+          <!-- <h5>{{media.titre}}</h5> -->
+          <div class="product-item">
+            <div class="product-item-content">
+              <div class="p-mb-3">
+              </div>
+              <div>
+                <h4 class="p-mb-1 media img-thumbnail">
+                  <img class="card-img-top" height="150" width="150" src="{{media?.photoUrl}}" alt="" #nav>
+                </h4>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </p-carousel>
+    </div>
+    <div class="card-body">
+      <p-carousel [value]="mediaAdminOrFormateur" [numVisible]="3" [numScroll]="3" [circular]="false"
+        [responsiveOptions]="responsiveOptions">
+        <ng-template pTemplate="header">
+        </ng-template>
+        <ng-template let-media pTemplate="item">
+          <div class="product-item">
+            <div class="product-item-content">
+              <div class="card" style="width: 18rem;" (click)="show(media)">
+                <img class="card-img-top" src="{{media?.photoUrl}}" alt="image activite" style="height: 100px;">
+                <!-- <div class="card-body">
               <p class="card-text">{{media?.titre}}</p>
             </div> -->
+              </div>
+
+            </div>
           </div>
-
-        </div>
-      </div>
-    </ng-template>
-  </p-carousel>
-</div>
-
+        </ng-template>
+      </p-carousel>
+    </div>
   </p-tabPanel>
-  </p-tabView>
+  <p-tabPanel *ngIf="isAdmin"  header="Logs">
+    <table class="table table-hover">
+      <thead class="table-borderless">
+        <tr class="text-center">
+          <th>Action</th>
+          <th>description</th>
+          <th>Cree par</th>
+          <th>Cree le</th>                   
+        </tr>
+      </thead>
+      <tbody *ngFor="let audit of listAudit | paginate : {itemsPerPage : 6, currentPage: pageAudit, id:'audit' } ">
+        <tr class="text-center" *ngIf="audit !== null" >
+          <td>{{audit.tableName}}</td>
+          <td>{{audit.action}}</td>
+          <td>{{audit.createdBy.email}}</td>          
+          <td>{{audit.createdDate |  date:"dd-MM-yyyy HH:mm:ss"}}</td>          
+        </tr>
+      </tbody>
+    </table>
+    <pagination-controls (pageChange)=" pageAudit = $event" id="audit"></pagination-controls>
+  </p-tabPanel>
+</p-tabView>
 
-  <!-- <pagination-controls (pageChange)=" pageAlumnigalerie = $event" id="galerieview" ></pagination-controls> -->
-  <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="threadModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <form #newMediaForum="ngForm" (ngSubmit)="onNewMediaForum(newMediaForum)">
-          <div class="modal-header d-flex align-items-center bg-primary text-white">
-            <h6 class="modal-title mb-0" id="threadModalLabel">Nouvelle Media</h6>
-          </div>
-          <div class="modal-body">
-            <div class="form-group">
-              <label for="threadTitle">Details activité</label>
-              <textarea type="text" class="form-control" id="threadTitle" style="width: 500px; height: 200px;"
-                name="titre" placeholder="entrer les details de l'image" required ngModel></textarea>
-            </div>
-            <!-- <textarea class="form-control summernote" style="display: none;"></textarea> -->
-
-            <div class="custom-file">
-              <input type="file" accept="image/*" name="profileImage"
-                (change)="onProfileImageChange($any($event).target.files[0].name, $any($event).target.files[0])"
-                class="custom-file-input">
-              <label class="custom-file-label"><span [hidden]="!fileName">{{fileName}}</span>
-                <span [hidden]="!fileName"></span>
-              </label>
-            </div>
-          </div>
-          <button type="submit" style="display: none;" id="new-catForum-save"></button>
-        </form>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-light" data-dismiss="modal" id="new-media-close">Cancel</button>
-          <button type="button" (click)="saveNewMedia()" class="btn btn-primary">Post</button>
+<!-- <pagination-controls (pageChange)=" pageAlumnigalerie = $event" id="galerieview" ></pagination-controls> -->
+<div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="threadModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <form #newMediaForum="ngForm" (ngSubmit)="onNewMediaForum(newMediaForum)">
+        <div class="modal-header d-flex align-items-center bg-primary text-white">
+          <h6 class="modal-title mb-0" id="threadModalLabel">Nouvelle Media</h6>
         </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="threadTitle">Details activité</label>
+            <textarea type="text" class="form-control" id="threadTitle" style="width: 500px; height: 200px;"
+              name="titre" placeholder="entrer les details de l'image" required ngModel></textarea>
+          </div>
+          <!-- <textarea class="form-control summernote" style="display: none;"></textarea> -->
+
+          <div class="custom-file">
+            <input type="file" accept="image/*" name="profileImage"
+              (change)="onProfileImageChange($any($event).target.files[0].name, $any($event).target.files[0])"
+              class="custom-file-input">
+            <label class="custom-file-label"><span [hidden]="!fileName">{{fileName}}</span>
+              <span [hidden]="!fileName"></span>
+            </label>
+          </div>
+        </div>
+        <button type="submit" style="display: none;" id="new-catForum-save"></button>
+      </form>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" data-dismiss="modal" id="new-media-close">Cancel</button>
+        <button type="button" [disabled]="newMediaForum.invalid" (click)="saveNewMedia()" class="btn btn-primary">Post</button>
       </div>
     </div>
   </div>
+</div>

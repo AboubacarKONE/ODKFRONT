@@ -1,4 +1,6 @@
-export class User{
+import { Audit } from "./abstract";
+
+export class User {
     public id?:number;
     public userId:string;
     public nom:string;

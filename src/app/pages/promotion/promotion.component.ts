@@ -1,3 +1,6 @@
+import { audit } from 'src/app/enum/audit';
+import { LogService } from './../../service/log.service';
+import { Log } from './../../model/Log';
 import { promotionModel } from './../../model/promotionModel';
 import { lignePromotion } from './../../model/lignePromotion';
 import { lignePromoModel } from './../../model/lignePromoModel';
@@ -38,20 +41,21 @@ export class PromotionComponent implements OnInit, OnDestroy {
   public editPromo = new promotionModel;
   public promoSaved: promotion;
   public selectedUser: User;
+  public log = new Log;
   // public ligPromoFormateur:promotion;
   public isAdmin: boolean;
   public isFormateur: boolean;
   private subscriptions: Subscription[] = [];
   public promos: promotion[];
-
-
   ref: DynamicDialogRef | undefined;
   constructor(private promoService: PromotionService,
     private userservice: UserService,
     private notificationService: NotificationService,
     private authenticationService: AuthenticationService,
     public dialoService: DialogService,
-    private lignePromoService: LignePromoService) { }
+    private lignePromoService: LignePromoService,
+    private logService:LogService
+   ) { }
 
   ngOnInit(): void {
 
@@ -73,13 +77,17 @@ export class PromotionComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.promoService.getPromotions().subscribe(
         (response: promotion[]) => {
-          this.promos = response;
+          this.promos = response;        
+          // this.auditService.promotionAudit = this.promos;
           this.promos.forEach(pr => {
             this.lignePromoService.findAllFormateurByPromotionId(pr.id).subscribe(
               (ligneFormateur: lignePromotion[]) => {
                 pr.lignePromotions = ligneFormateur;
                 // console.log(pr.lignePromotions);
               })
+          })
+          this.promos.forEach(p=>{
+            // this.auditService.listAudit.push(p)
           })
           if (showNotification) {
             this.sendNotification(NotificationType.SUCCESS, `${response.length} promotions chargés avec succès.`)
@@ -127,7 +135,7 @@ export class PromotionComponent implements OnInit, OnDestroy {
     this.Formateur.forEach(f=>{
       if(f.id !== user.id){
         this.formateurNot.push(f);
-        console.log(this.formateurNot);        
+        // console.log(this.formateurNot);        
       }
     })
     // this.subscriptions.push(
@@ -171,8 +179,15 @@ export class PromotionComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.promoService.savePromotion(promoForm).subscribe(
         (response: promotion) => {
-          this.clickButton('new-promo-close')
-          this.sendNotification(NotificationType.SUCCESS, `${response.libelle} ajout effectué avec succès`)
+          this.log.action = `ajout de ${response.libelle}`;
+          this.log.tableName =audit.AJOUTER
+          this.log.createdBy = this.user;              
+          this.logService.saveLog(this.log).subscribe(
+          (audit: Log) => { 
+            this.clickButton('new-promo-close')
+            this.sendNotification(NotificationType.SUCCESS, `${response.libelle} ajout effectué avec succès`)
+          });
+         
           // this.ligPromo.promotion = response;
           // this.getUserById(this.idUser)
           // // this.ligPromo.user = this.formateur;

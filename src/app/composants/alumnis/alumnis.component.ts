@@ -1,3 +1,6 @@
+import { audit } from 'src/app/enum/audit';
+import { LogService } from './../../service/log.service';
+import { Log } from './../../model/Log';
 import { Role } from './../../enum/Role.enum';
 import { lignePromoModel } from './../../model/lignePromoModel';
 import { CustomHttpRespone } from './../../model/custom-http-response';
@@ -24,8 +27,8 @@ import { lignePromotion } from 'src/app/model/lignePromotion';
 export class AlumnisComponent implements OnInit {
   // @Input()
   // public idPromo: number;
-  public pageAlumni:number = 1;
-  public alum :Role.ALUMNI;
+  public pageAlumni: number = 1;
+  public alum: Role.ALUMNI;
   private subscriptions: Subscription[] = [];
   public usersByPromos: User[];
   public refreshing: boolean;
@@ -38,15 +41,18 @@ export class AlumnisComponent implements OnInit {
   public isFormateur: boolean;
   public isSuperAdmin: boolean;
   public ligPromo = new lignePromoModel;
+  public log = new Log;
+  public userConnected: User;
   constructor(private lignePromoService: LignePromoService, private notificationService: NotificationService, private promoService: PromotionService,
     private authenticationService: AuthenticationService, private userService: UserService,
-    private activatedRoute: ActivatedRoute, private router:Router) { }
+    private activatedRoute: ActivatedRoute, private router: Router, private logService: LogService) { }
 
   ngOnInit(): void {
     this.getUserByPromos(true);
     this.isAdmin = this.authenticationService.isAdmin;
     this.isFormateur = this.authenticationService.isFormateur;
     this.isSuperAdmin = this.authenticationService.isSuperAdmin;
+    this.userConnected = this.authenticationService.getUserFromLocalCache();
   }
   getUserByPromos(showNotification: boolean) {
     this.subscriptions.push(
@@ -82,10 +88,9 @@ export class AlumnisComponent implements OnInit {
         (response: User) => {
           const formData = new FormData();
           formData.append('idUser', JSON.stringify(response.id));
-          formData.append('idPromo', this.activatedRoute.snapshot.params.id);          
+          formData.append('idPromo', this.activatedRoute.snapshot.params.id);
           this.addNewLignePromotion(formData);
-          userForm.reset();
-          this.sendNotification(NotificationType.SUCCESS, `${response.prenom} ${response.nom} ajout effectuer avec succès`)
+          userForm.reset();         
         },
         (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
@@ -98,10 +103,18 @@ export class AlumnisComponent implements OnInit {
     this.subscriptions.push(
       this.lignePromoService.saveLignePromo(formData).subscribe(
         (responseLignePromo: lignePromotion) => {
-          this.clickButton('new-user-close');
-          this.getUserByPromos(false);
-          this.fileName = null;
-          this.profileImage = null;
+          this.log.action = `Ajout de  ${responseLignePromo.user.login}`;
+          this.log.tableName = audit.AJOUTER
+          this.log.createdBy = this.userConnected;         
+          this.logService.saveLog(this.log).subscribe(
+            (audit: Log) => {
+              this.clickButton('new-user-close');
+              this.getUserByPromos(false);
+              this.fileName = null;
+              this.profileImage = null;
+              this.sendNotification(NotificationType.SUCCESS, `${responseLignePromo.user.prenom} ${responseLignePromo.user.nom} ajout effectuer avec succès`)
+            });
+
         },
         (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
@@ -122,12 +135,18 @@ export class AlumnisComponent implements OnInit {
     this.subscriptions.push(
       this.userService.updateAlumni(formData).subscribe(
         (response: User) => {
-          this.clickButton('closeEditUserModalButton');
-          console.log(response);          
-          this.getUserByPromos(false);
-          this.fileName = null;
-          this.profileImage = null;
-          this.sendNotification(NotificationType.SUCCESS, `${response.prenom} ${response.nom} updated successfully`);
+          this.log.action = `Modification de  ${response.login}`;
+          this.log.tableName = audit.MODIFIER
+          this.log.createdBy = this.userConnected;        
+          this.logService.saveLog(this.log).subscribe(
+            (audit: Log) => {
+              this.clickButton('closeEditUserModalButton');
+              console.log(response);
+              this.getUserByPromos(false);
+              this.fileName = null;
+              this.profileImage = null;
+              this.sendNotification(NotificationType.SUCCESS, `${response.prenom} ${response.nom} updated successfully`);
+            });          
         },
         (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
@@ -140,8 +159,14 @@ export class AlumnisComponent implements OnInit {
     this.subscriptions.push(
       this.userService.deleteUser(user).subscribe(
         (response: CustomHttpRespone) => {
-          this.sendNotification(NotificationType.SUCCESS, response.message);
-          this.getUserByPromos(false);
+          this.log.action = `Suppression de  ${user}`;
+          this.log.tableName = audit.SUPPRIMER
+          this.log.createdBy = this.userConnected;         
+          this.logService.saveLog(this.log).subscribe(
+            (audit: Log) => {
+              this.sendNotification(NotificationType.SUCCESS, response.message);
+              this.getUserByPromos(false);
+            });          
         },
         (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
@@ -149,15 +174,15 @@ export class AlumnisComponent implements OnInit {
       )
     )
   }
-  sendInvitationAlumni(email:string){           
+  sendInvitationAlumni(email: string) {
     this.refreshing = true;
     this.subscriptions.push(
       this.userService.subscribeAlumniByEmail(email).subscribe(
-        (response:CustomHttpRespone)=>{
-          this.sendNotification(NotificationType.SUCCESS,response.message);          
+        (response: CustomHttpRespone) => {
+          this.sendNotification(NotificationType.SUCCESS, response.message);
           this.refreshing = false
         },
-        (errorResponse: HttpErrorResponse)=>{
+        (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.WARNING, errorResponse.error.message);
           this.refreshing = false
         },

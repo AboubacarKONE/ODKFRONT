@@ -4,8 +4,9 @@
 
 export const environment = {
   production: false,
+  // apiUrl:'https://gescomali.ml:8443/odkconnect',
   apiUrl:'http://localhost:8082',
-  Media:'http://localhost:8082/odkConnect/file/affichermedia/'
+  // Media:'http://localhost:8443/odkConnect/file/affichermedia/'
 };
 
 /*

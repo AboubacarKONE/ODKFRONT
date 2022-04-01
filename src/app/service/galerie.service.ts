@@ -20,6 +20,9 @@ export class GalerieService {
   public findAllByAlum(): Observable<media[]> {
     return this.http.get<media[]>(`${this.host}/odkConnect/media/listMediaByAlum`)
   }
+  public findAllByMedia(): Observable<media[]> {
+    return this.http.get<media[]>(`${this.host}/odkConnect/media/listAll`)
+  }
   public findAllMediaByUserId(id:number): Observable<media[]> {
     return this.http.get<media[]>(`${this.host}/odkConnect/media/listMediaByUser/${id}`)
   }

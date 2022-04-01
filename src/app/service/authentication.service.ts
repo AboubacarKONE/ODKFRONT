@@ -10,7 +10,7 @@ import { Role } from '../enum/Role.enum';
   providedIn: 'root'
 })
 export class AuthenticationService {
-  public host = environment.apiUrl;
+  public host = environment.apiUrl
   private token:any;
   private loggedInUsername:any;
   private JwtHelper = new JwtHelperService();

@@ -19,6 +19,9 @@ export class ResponseService {
   }
   findAllresponseByQuiz(idQuiz:number): Observable<responseForum[]> {
     return this.http.get<responseForum[]>(`${this.host}/odkConnect/forum/response/listResponseForum/${idQuiz}`)
+  } 
+  findAllResponse(): Observable<responseForum[]> {
+    return this.http.get<responseForum[]>(`${this.host}/odkConnect/forum/response/listResponse`)
   }
   deleteResponseForm(idResponse: number): Observable<CustomHttpRespone> {
     return this.http.delete<CustomHttpRespone>(`${this.host}/odkConnect/forum/response/deleteResponseForum/${idResponse}`);

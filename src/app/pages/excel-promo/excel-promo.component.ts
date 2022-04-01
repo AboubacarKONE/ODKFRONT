@@ -16,50 +16,50 @@ type AOA = any[][];
 })
 export class ExcelPromoComponent implements OnInit {
 
-  alumnis:any[]=[];
+  alumnis: any[] = [];
   userPromo: any;
   id: any;
-  
-  spinnerEnabled=false;
-  keys!:string[];
-  dataSheet= new Subject();
-  data:any;
- @ViewChild('inputFile') inputFile!: ElementRef;
- isExcelFile!:boolean;
- name = 'Angular';
+
+  spinnerEnabled = false;
+  keys!: string[];
+  dataSheet = new Subject();
+  data: any;
+  @ViewChild('inputFile') inputFile!: ElementRef;
+  isExcelFile!: boolean;
+  name = 'Angular';
   fileName: string = 'SheetJS.xlsx';
   datas: any;
   headData: any // excel row header
   activite: any;
-  manyPart: ManyAlumnis= new ManyAlumnis();
+  manyPart: ManyAlumnis = new ManyAlumnis();
 
 
-  constructor(private promoService:PromotionService,
-             private userservice: UserService,
-             private notificationService: NotificationService, 
-             private router: Router,) { }
+  constructor(private promoService: PromotionService,
+    private userservice: UserService,
+    private notificationService: NotificationService,
+    private router: Router,) { }
 
   ngOnInit(): void {
-    
+
   }
 
 
   onFileChange(evt: any) {
     // let data: any, header;
-    const target : DataTransfer = <DataTransfer>(evt.target);
+    const target: DataTransfer = <DataTransfer>(evt.target);
     this.isExcelFile = !!target.files[0].name.match(/(.xls|.xlsx)/);
-    if(target.files.length > 1) {
-      this.inputFile.nativeElement.value= '';
+    if (target.files.length > 1) {
+      this.inputFile.nativeElement.value = '';
     }
 
-    if(this.isExcelFile){
-      this.alumnis=[];
+    if (this.isExcelFile) {
+      this.alumnis = [];
       this.spinnerEnabled = true;
       const reader: FileReader = new FileReader();
-      reader.onload = (e: any) =>{
+      reader.onload = (e: any) => {
         // lire le classeur
         const bstr: string = e.target.result;
-        const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary'});
+        const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
 
         // saisir la première feuille
         const wsname: string = wb.SheetNames[0];
@@ -80,7 +80,7 @@ export class ExcelPromoComponent implements OnInit {
       }
 
       this.PreviewFichier(evt);
-    }else{
+    } else {
       this.inputFile.nativeElement.value = '';
     };
   }
@@ -132,72 +132,69 @@ export class ExcelPromoComponent implements OnInit {
   }
 
   // export(): void {
-	// 	/* generate worksheet */
-	// 	const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(this.data);
+  // 	/* generate worksheet */
+  // 	const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(this.data);
 
-	// 	/* generate workbook and add the worksheet */
-	// 	const wb: XLSX.WorkBook = XLSX.utils.book_new();
-	// 	XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+  // 	/* generate workbook and add the worksheet */
+  // 	const wb: XLSX.WorkBook = XLSX.utils.book_new();
+  // 	XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
 
-	// 	/* save to file */
-	// 	XLSX.writeFile(wb, this.fileName);
-	// }
+  // 	/* save to file */
+  // 	XLSX.writeFile(wb, this.fileName);
+  // }
 
-  annuler(){
-     window.location.reload();
+  annuler() {
+    window.location.reload();
     // 
   }
 
-  ajoutFichier(){
+  ajoutFichier() {
     this.id = this.userservice.getIdAlumnis();
-    for(let i=0; i<this.datas.length; i++){
+    for (let i = 0; i < this.datas.length; i++) {
       // console.log(this.data[i]);
       this.alumnis.push({
-        nom:this.datas[i].nom,
-        prenom:this.datas[i].prenom,
-        email:this.datas[i].email,
-        telephone:this.datas[i].telephone,
-        adresse:this.datas[i].adresse,
+        nom: this.datas[i].nom,
+        prenom: this.datas[i].prenom,
+        email: this.datas[i].email,
+        telephone: this.datas[i].telephone,
+        adresse: this.datas[i].adresse,
       });
     }
-    console.log(this.alumnis);
-    this.manyPart.alumni=this.alumnis;
+    this.manyPart.alumni = this.alumnis;
     //console.log("plusieurs part", this.manyPart);
-   
-    this.userservice.ajoutAlumiExcel(this.alumnis).subscribe((data:any)=>{
-         // window.location.reload();
-         for(let i=0; i< data.length; i++){
-           this.promoService.getPromotionById(this.id).subscribe((pro: any)=>{
-             console.log(pro);
-             
-             this.userPromo = {'user': data[i], 'promotion': pro}
-             this.userservice.addUserPromo(this.userPromo).subscribe((data:any)=>{
-               // window.location.reload();
-              
-              })
-           })
-          
-         }
-         this.sendNotification(NotificationType.SUCCESS, `liste importée avec succès`)
-        //  this.annuler()
-          // this.router.navigateByUrl('promotions', {skipLocationChange: true}).then(()=>
-          // this.router.navigate(['promotions'])); 
-   
-        // console.log("insert....", data)
+
+    this.userservice.ajoutAlumiExcel(this.alumnis).subscribe((data: any) => {
+      // window.location.reload();
+      for (let i = 0; i < data.length; i++) {
+        this.promoService.getPromotionById(this.id).subscribe((pro: any) => {
+          this.userPromo = { 'user': data[i], 'promotion': pro }
+          this.userservice.addUserPromo(this.userPromo).subscribe((data: any) => {
+            // window.location.reload();
+
+          })
+        })
+
+      }
+      this.sendNotification(NotificationType.SUCCESS, `liste importée avec succès`)
+      //  this.annuler()
+      // this.router.navigateByUrl('promotions', {skipLocationChange: true}).then(()=>
+      // this.router.navigate(['promotions'])); 
+
+      // console.log("insert....", data)
     },
-    (err=>{
-      console.log("erreur...", err);
-      
-    })
+      (err => {
+        console.log("erreur...", err);
+
+      })
     )
-   }
-   private sendNotification(notificationType: NotificationType, message: string): void {
+  }
+  private sendNotification(notificationType: NotificationType, message: string): void {
     if (message) {
       this.notificationService.notify(notificationType, message);
     } else {
       this.notificationService.notify(notificationType, 'Une erreur s\'est produite. Please try again.');
     }
   }
- 
+
 
 }

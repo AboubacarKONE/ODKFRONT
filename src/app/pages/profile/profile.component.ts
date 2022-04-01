@@ -1,3 +1,6 @@
+import { LogService } from './../../service/log.service';
+import { Log } from './../../model/Log';
+import { audit } from 'src/app/enum/audit';
 import { AuthenticationService } from './../../service/authentication.service';
 import { User } from './../../model/User';
 import { Component, OnDestroy, OnInit } from '@angular/core';
@@ -25,8 +28,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
   public isAdmin: boolean;
   public isFormateur: boolean;
   public isSuperAdmin:boolean;
+  public log = new Log;
   constructor(private authenticationService: AuthenticationService, private userService: UserService,
-    private notificationService: NotificationService, private router: Router) { }
+    private notificationService: NotificationService, private router: Router, private logService:LogService) { }
   ngOnInit(): void {
     this.user = this.authenticationService.getUserFromLocalCache(); 
     this.isAdmin = this.authenticationService.isAdmin;
@@ -70,20 +74,24 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }
     
   }
-  public onUpdateCurrentUser(user: User): void {  
-    console.log(user.role);
-     
+  public onUpdateCurrentUser(user: User): void {       
     this.refreshing = true;
     this.currentUsername = this.authenticationService.getUserFromLocalCache().login;
     const formData = this.userService.createUserFormData(this.currentUsername, user, this.profileImage);
     this.subscriptions.push(
       this.userService.updateUser(formData).subscribe(
         (response: User) => {
-          this.authenticationService.addUserToLocalCache(response);
-          this.fileName = null;
-          this.profileImage = null;
-          this.sendNotification(NotificationType.SUCCESS, `${response.prenom} ${response.nom} update successfully`)
-          this.refreshing = false
+          this.log.action= `Modification de ${response.login}`;
+          this.log.tableName = audit.MODIFIER
+          this.log.createdBy = this.user;                  
+          this.logService.saveLog(this.log).subscribe(
+            (audit: Log) => {
+              this.authenticationService.addUserToLocalCache(response);
+              this.fileName = null;
+              this.profileImage = null;
+              this.sendNotification(NotificationType.SUCCESS, `${response.prenom} ${response.nom} update successfully`)
+              this.refreshing = false
+            });          
         },
         (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.SUCCESS, errorResponse.error.message);

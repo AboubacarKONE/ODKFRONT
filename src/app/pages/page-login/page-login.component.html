@@ -9,7 +9,7 @@
     </div>
     <div class="col-md-6">
       <div class="card justify-content-md-center">
-        <div class="card-header text-center">
+        <div class="card-header text-center" style="background-color:black;color: #FF6600;">
           <h3>Se connecter</h3>
         </div>
                 <form #loginForm="ngForm" (ngSubmit)="onLogin(loginForm.value)" autocomplete="off">
@@ -28,8 +28,8 @@
             <span class="help-block" style="color:red;" *ngIf="passwordInput.invalid && passwordInput.touched">Please
               entrez le mot de passe</span>
             <div class="mb-3 d-flex justify-content-between">
-              <a  [routerLink]="['/inscrire']" class="btn btn-link">S'inscrire</a>
-              <button type="submit" [disabled]="loginForm.invalid || loading" name="button" class="btn btn-primary">
+              <a  [routerLink]="['/inscrire']" class="btn btn-link" style="color: black;">S'inscrire</a>
+              <button type="submit" [disabled]="loginForm.invalid || loading" name="button" class="btn btn-dark" style="color: #FF6600;">
                 <i *ngIf="loading" class="fas fa-spinner fa-spin"></i>
                 <span *ngIf="loading">Loading...</span>
                 <!-- <span *ngIf="!loading">Se connecter</span> -->

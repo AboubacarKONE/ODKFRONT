@@ -1,7 +1,8 @@
+import { Audit } from './abstract';
 import { User } from './User';
-export interface categoryForum{
+export interface categoryForum {
     id?:number;
-    libelle?:string;
+    libelleCat?:string;
     photoUrl?:string;
     user?:User;
 }

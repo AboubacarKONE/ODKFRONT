@@ -1,3 +1,15 @@
+import { audit } from 'src/app/enum/audit';
+import { LogService } from './../../service/log.service';
+import { Log } from './../../model/Log';
+import { PromotionService } from './../../service/promotion.service';
+import { Audit } from 'src/app/model/Audit';
+import { CategoryForumService } from './../../service/category-forum.service';
+import { ResponseService } from './../../service/response.service';
+import { QuizServiceService } from './../../service/quiz-service.service';
+import { categoryForum } from 'src/app/model/category';
+import { promotion } from 'src/app/model/promotion';
+import { quizForum } from 'src/app/model/quiz';
+import { responseForum } from './../../model/response';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
@@ -14,12 +26,15 @@ import { NotificationService } from 'src/app/service/notification.service';
 import { UserService } from 'src/app/service/user.service';
 import { ViewimageComponent } from 'src/app/viewimage/viewimage.component';
 
+
+
 @Component({
   selector: 'app-page-statistiques',
   templateUrl: './page-statistiques.component.html',
   styleUrls: ['./page-statistiques.component.scss']
 })
 export class PageStatistiquesComponent implements OnInit {
+  public pageAudit: number = 1;
   public isAdmin: boolean;
   public isFormateur: boolean;
   public isAlumni: boolean;
@@ -31,6 +46,15 @@ export class PageStatistiquesComponent implements OnInit {
   public mediaByUser: media[];
   public fileName: string;
   public profileImage: File;
+  public log = new Log;
+  public listAudit: Log[];
+  // public auditTrie:Audit[]=[];
+  // public userAudit: User[];
+  // public responseAudit: responseForum[];
+  // public quizAudit: quizForum[];
+  // public promotionAudit: promotion[];
+  // public mediaAudit: media[];
+  // public categoryAudit: categoryForum[];
   private subscriptions: Subscription[] = [];
   responsiveOptions: { breakpoint: string; numVisible: number; numScroll: number; }[];
 
@@ -61,7 +85,7 @@ export class PageStatistiquesComponent implements OnInit {
     private authenticationService: AuthenticationService,
     public galerieService: GalerieService,
     private notificationService: NotificationService,
-    public dialoService: DialogService,
+    public dialoService: DialogService, private logService:LogService
   ) {
     this.responsiveOptions = [
       {
@@ -109,12 +133,10 @@ export class PageStatistiquesComponent implements OnInit {
     })
 
     this.getGraphe();
-
-
     this.user = this.authenticationService.getUserFromLocalCache();
     this.findAllByAdminAndFormateur();
     this.findAllMediaByUserId();
-    // this.findAllByAlum();
+    this.getAllLogs();
   }
   // findAllByAlum() {
   //   this.subscriptions.push(
@@ -134,7 +156,7 @@ export class PageStatistiquesComponent implements OnInit {
       this.galerieService.findAllMediaByUserId(this.user.id).subscribe(
         (response: media[]) => {
           this.mediaByUser = response;
-          console.log("content media", this.mediaByUser);
+          // console.log("content media", this.mediaByUser);
         },
         (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
@@ -166,7 +188,8 @@ export class PageStatistiquesComponent implements OnInit {
 
   onNewMediaForum(mediaForm: NgForm) {
     if (this.profileImage == null) {
-      this.sendNotification(NotificationType.ERROR, `VEUILLEZ SELECTIONNER UN MEDIA`)    }
+      this.sendNotification(NotificationType.ERROR, `VEUILLEZ SELECTIONNER UN MEDIA`)
+    }
     if (mediaForm.value.titre) {
       const formData = new FormData();
       formData.append('titre', mediaForm.value.titre);
@@ -176,12 +199,19 @@ export class PageStatistiquesComponent implements OnInit {
       this.subscriptions.push(
         this.galerieService.addNewMedia(formData).subscribe(
           (response: media) => {
-            this.clickButton('new-media-close');
-            this.fileName = null;
-            this.profileImage = null;
-            mediaForm.reset();
-            this.sendNotification(NotificationType.SUCCESS, `MEDIA AJOUTEE AVEC SUCCES`)
-            // this.getAllQuizByCatForum(this.idCat);
+            this.log.action= `Ajout de l'activité ${response.titre.substring(0,50)}`;
+          this.log.tableName = audit.AJOUTER
+          this.log.createdBy = this.user;                 
+          this.logService.saveLog(this.log).subscribe(
+            (audit: Log) => {
+              this.clickButton('new-media-close');
+              this.fileName = null;
+              this.profileImage = null;
+              mediaForm.reset();
+              this.sendNotification(NotificationType.SUCCESS, `MEDIA AJOUTEE AVEC SUCCES`)
+              this.findAllByAdminAndFormateur();
+            });
+        
           },
           (errorResponse: HttpErrorResponse) => {
             this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
@@ -195,16 +225,100 @@ export class PageStatistiquesComponent implements OnInit {
     }
 
   }
-  // clickButton(arg0: string) {
-  //   throw new Error('Method not implemented.');
-  // }
-  private sendNotification(notificationType: NotificationType, message: string): void {
-    if (message) {
-      this.notificationService.notify(notificationType, message);
-    } else {
-      this.notificationService.notify(notificationType, 'Une erreur s\'est produite. Please try again.');
-    }
+  public getAllLogs(): void {
+    this.subscriptions.push(
+      this.logService.findAllLogs(). subscribe(
+        (response: Log[]) => { 
+          this.listAudit = response;
+        // console.log(this.listAudit)
+        },
+        (errorResponse: HttpErrorResponse) => {
+          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+        }
+      )
+    );
   }
+  // public getQuizForums() {
+  //   this.subscriptions.push(
+  //     this.quizService.getAllQuizForum().subscribe(
+  //       (response: Audit[]) => {
+  //         // this.quizForum = response;
+  //         // this.auditService.quizAudit = this.quizForum;
+  //         response.forEach(q => {
+  //           this.listAudit.push(q)
+  //         })
+  //         // console.log(this.quizForum);
+  //       },
+  //       (errorResponse: HttpErrorResponse) => {
+  //         this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+  //       }
+  //     )
+  //   );
+  // }
+  // public getCategoryForums() {
+  //   this.subscriptions.push(
+  //     this.catForumService.getAllCategoryForum().subscribe(
+  //       (response: Audit[]) => {
+  //         // this.cateForum = response;
+  //         // this.auditService.categoryAudit = this.cateForum;
+  //         response.forEach(c => {
+  //           this.listAudit.push(c)
+  //         })
+  //         // console.log( this.auditService.listAudit);          
+  //       },
+  //       (errorResponse: HttpErrorResponse) => {
+  //         this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+  //       }
+  //     )
+  //   );
+  // }
+  // getPromos() {
+  //   this.subscriptions.push(
+  //     this.promoService.getPromotions().subscribe(
+  //       (response: Audit[]) => {
+  //         // this.promos = response;        
+  //         // this.auditService.promotionAudit = this.promos;
+  //         response.forEach(p => {
+  //           this.listAudit.push(p)
+  //         })
+  //       },
+  //       (errorResponse: HttpErrorResponse) => {
+  //         this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+  //       }
+  //     )
+  //   );
+  // }
+  // getMedia() {
+  //   this.subscriptions.push(
+  //     this.galerieService.findAllByMedia().subscribe(
+  //       (response: Audit[]) => {         
+  //         response.forEach(p => {
+  //           this.listAudit.push(p)
+  //         })
+  //       },
+  //       (errorResponse: HttpErrorResponse) => {
+  //         this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+  //       }
+  //     )
+  //   );
+  // }
+  // getResponse() {
+  //   this.subscriptions.push(
+  //     this.responseService.findAllResponse().subscribe(
+  //       (response: Audit[]) => {
+  //         // console.log(response);                   
+  //         response.forEach(p => {
+  //           this.listAudit.push(p);
+  //         })
+  //       },
+  //       (errorResponse: HttpErrorResponse) => {
+  //         this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+  //       }
+  //     )
+  //   );
+  // }
+ 
+
 
   getGraphe() {
     this.userService.getUsers().subscribe((data: any) => {
@@ -271,7 +385,13 @@ export class PageStatistiquesComponent implements OnInit {
 
 
   }
-
+  private sendNotification(notificationType: NotificationType, message: string): void {
+    if (message) {
+      this.notificationService.notify(notificationType, message);
+    } else {
+      this.notificationService.notify(notificationType, 'Une erreur s\'est produite. Please try again.');
+    }
+  }
   private clickButton(buttonId: string): void {
     document.getElementById(buttonId)?.click()
   }

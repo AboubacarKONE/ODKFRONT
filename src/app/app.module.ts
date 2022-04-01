@@ -41,7 +41,6 @@ import {NgxPaginationModule} from 'ngx-pagination';
 import { ExcelPromoComponent } from './pages/excel-promo/excel-promo.component';
 import { ViewimageComponent } from './viewimage/viewimage.component';
 import { PageInscriptionAlumniComponent } from './pages/page-inscription-alumni/page-inscription-alumni.component';
-import {VirtualScrollerModule} from 'primeng/virtualscroller';
 
 
 //import { ChartsModule } from 'ng2-charts';
@@ -84,8 +83,7 @@ import {VirtualScrollerModule} from 'primeng/virtualscroller';
     BrowserAnimationsModule,
     CarouselModule,
     ImageModule,
-    ChartsModule,
-    VirtualScrollerModule
+    ChartsModule
     //ChartsModule
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA],

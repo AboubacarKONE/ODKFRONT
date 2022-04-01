@@ -1,3 +1,5 @@
+import { Log } from './../../model/Log';
+import { LogService } from './../../service/log.service';
 import { HeaderComponent } from './../../composants/header/header.component';
 import { HttpErrorResponse, HttpEvent, HttpEventType } from '@angular/common/http';
 import { NotificationService } from './../../service/notification.service';
@@ -9,6 +11,7 @@ import { NotificationType } from 'src/app/enum/notification-type.enum';
 import { NgForm } from '@angular/forms';
 import { CustomHttpRespone } from 'src/app/model/custom-http-response';
 import { AuthenticationService } from 'src/app/service/authentication.service';
+import  { audit } from 'src/app/enum/audit';
 
 
 
@@ -36,11 +39,15 @@ export class AdministrateursComponent implements OnInit, OnDestroy {
   public isAdmin: boolean;
   public isFormateur: boolean;
   public isSuperAdmin: boolean;
-  constructor(private authenticationService: AuthenticationService, private userService: UserService, private notificationService: NotificationService) { }
+  public log= new Log;
+  public userConnected:User;
+  constructor(private authenticationService: AuthenticationService, private userService: UserService, 
+    private notificationService: NotificationService, private logService: LogService) { }
 
 
 
-  ngOnInit(): void {
+  ngOnInit(): void {  
+    this.userConnected = this.authenticationService.getUserFromLocalCache();   
     this.getAdministrateurs(true);
     this.getFormateurs(true);
     this.getSuperAdministrateurs(true);
@@ -54,7 +61,7 @@ export class AdministrateursComponent implements OnInit, OnDestroy {
       this.userService.getUsersByRole('ROLE_SUPER_ADMIN').subscribe(
         (response: User[]) => {
           this.userService.addUsersToLocalCache(response);
-          this.SuperAdmin = response;
+          this.SuperAdmin = response;         
           this.refreshing = false;
           if (showNotification) {
             this.sendNotification(NotificationType.SUCCESS, `${response.length} super-administrateurs chargés avec succès.`)
@@ -105,6 +112,7 @@ export class AdministrateursComponent implements OnInit, OnDestroy {
       )
     );
   }
+ 
 
   public onSelectUsers(selectedUser: User): void {
     this.selectedUser = selectedUser;
@@ -123,14 +131,24 @@ export class AdministrateursComponent implements OnInit, OnDestroy {
     const formData = this.userService.createUserFormData(null, userForm.value, this.profileImage);
     this.subscriptions.push(
       this.userService.addUser(formData).subscribe(
-        (response: User) => {
-          this.clickButton('new-user-close');
-          this.getAdministrateurs(false);
-          this.fileName = null;
-          this.profileImage = null;
-          userForm.reset();
+        (response: User) => {         
           this.refreshing = false;
-          this.sendNotification(NotificationType.SUCCESS, `${response.prenom} ${response.nom} ajout effectuer avec succès`)
+          this.log.action= `ajout de ${response.login}`;
+          this.log.tableName = audit.AJOUTER
+          this.log.createdBy = this.userConnected;                  
+          this.logService.saveLog(this.log).subscribe(
+            (audit: Log) => {
+              this.clickButton('new-user-close');
+              this.getAdministrateurs(false);
+              this.getSuperAdministrateurs(false)
+              this.getFormateurs(false)
+              this.fileName = null;
+              this.profileImage = null;
+              userForm.reset();
+              this.sendNotification(NotificationType.SUCCESS, `${response.prenom} ${response.nom} ajout effectuer avec succès`)
+            }
+          );
+         
         },
         (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
@@ -151,12 +169,21 @@ export class AdministrateursComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.userService.updateUser(formData).subscribe(
         (response: User) => {
-          this.clickButton('closeEditUserModalButton');
-          // console.log(response.role.substring(5));          
-          this.getAdministrateurs(false);
-          this.fileName = null;
-          this.profileImage = null;
-          this.sendNotification(NotificationType.SUCCESS, `${response.prenom} ${response.nom} updated successfully`);
+          this.log.action= `Modification de ${response.login}`;
+          this.log.tableName = audit.MODIFIER
+          this.log.createdBy = this.userConnected;                  
+          this.logService.saveLog(this.log).subscribe(
+            (audit: Log) => {
+              this.clickButton('closeEditUserModalButton');
+              // console.log(response.role.substring(5));          
+              this.getAdministrateurs(false);
+              this.getSuperAdministrateurs(false)
+              this.getFormateurs(false)
+              this.fileName = null;
+              this.profileImage = null;
+              this.sendNotification(NotificationType.SUCCESS, `${response.prenom} ${response.nom} updated successfully`);
+            });
+         
         },
         (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
@@ -169,8 +196,17 @@ export class AdministrateursComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.userService.deleteUser(user).subscribe(
         (response: CustomHttpRespone) => {
-          this.sendNotification(NotificationType.SUCCESS, response.message);
-          this.getAdministrateurs(false);
+          this.log.action= `Suppression de ${user}`;
+          this.log.tableName = audit.SUPPRIMER
+          this.log.createdBy = this.userConnected;                  
+          this.logService.saveLog(this.log).subscribe(
+            (audit: Log) => {
+              this.sendNotification(NotificationType.SUCCESS, response.message);
+              this.getAdministrateurs(false);
+              this.getSuperAdministrateurs(false)
+              this.getFormateurs(false)
+            });
+      
         },
         (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);

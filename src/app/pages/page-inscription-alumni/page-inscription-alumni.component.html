@@ -1,6 +1,6 @@
 <div class="container my-container">
   <div class="card justify-content-md-center">
-    <div class="card-header text-center">
+    <div class="card-header text-center" style="background-color:black;color: #FF6600;">
       <h3>S'inscrire</h3>
     </div>
     <form #registerForm="ngForm" (ngSubmit)="onRegisterAlumni(registerForm.value)">
@@ -31,8 +31,8 @@
         <span class="help-block" style="color:red;" *ngIf="telephoneInput.invalid && telephoneInput.touched">Please
           entrez le numéro de téléphone</span>    
         <div class="mb-3 d-flex justify-content-between">
-          <a [routerLink]="['/login']" class="btn btn-link">Se connecter</a>
-          <button type="submit" [disabled]="registerForm.invalid || loading" name="button" class="btn btn-primary">
+          <a [routerLink]="['/login']" class="btn btn-link" style="color: black;">Se connecter</a>
+          <button type="submit" [disabled]="registerForm.invalid || loading" name="button" class="btn btn-dark" style="color: #FF6600;">
             <i *ngIf="loading" class="fas fa-spinner fa-spin"></i>
             <span *ngIf="loading">Loading...</span>
             <!-- <span *ngIf="!loading">Se connecter</span> -->
