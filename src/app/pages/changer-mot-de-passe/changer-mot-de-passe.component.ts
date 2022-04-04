@@ -1,3 +1,7 @@
+import { audit } from 'src/app/enum/audit';
+import { Log } from './../../model/Log';
+import { LogService } from './../../service/log.service';
+import { HttpErrorResponse } from '@angular/common/http';
 import { NotificationService } from './../../service/notification.service';
 import { NotificationType } from 'src/app/enum/notification-type.enum';
 import { Subscription } from 'rxjs';
@@ -15,19 +19,33 @@ import { Component, OnInit } from '@angular/core';
 export class ChangerMotDePasseComponent implements OnInit {
   public user:User;  
   public mtdp:ChangerModp ={};
+  public log = new Log;
   private subscriptions: Subscription[] = [];
-  constructor(private authenticationService: AuthenticationService, private userService:UserService, private notificationService:NotificationService) { }
+  constructor(private authenticationService: AuthenticationService, private userService:UserService, private notificationService:NotificationService,
+    private logService:LogService) { }
 
   ngOnInit(): void {
     this.user = this.authenticationService.getUserFromLocalCache(); 
     
   }
   changerMotDePasseUtilisateur(){
-    this.mtdp.id = this.user.id;
+    this.mtdp.id = this.user.id;  
+    console.log(this.mtdp);          
    this.subscriptions.push(
     this.userService.updatePassword(this.mtdp).subscribe(
-      (response:ChangerModp)=>{
+      (response:User)=>{
+        this.log.action = `Changement de mot passe`;
+        this.log.tableName = audit.MODIFIER
+        this.log.createdBy = this.user;
+        this.logService.saveLog(this.log).subscribe(
+          (audit: Log) => {
+
+          });
+        console.log(response);
         this.sendNotification(NotificationType.SUCCESS, `Mot de passe changer avec succès`)
+      },
+      (errorResponse: HttpErrorResponse) => {
+        this.sendNotification(NotificationType.ERROR, errorResponse.error.message);       
       }
     )
    )
@@ -39,6 +57,5 @@ export class ChangerMotDePasseComponent implements OnInit {
       this.notificationService.notify(notificationType, 'Une erreur s\'est produite. Please try again.');
     }
   }
-  cancel(){}
 
 }

@@ -40,6 +40,9 @@ export class UserService {
   getUsersByRole(role:string): Observable<User[]> {
     return this.http.get<User[]>(`${this.host}/odkConnect/user/listUsersByRole/${role}`)
   }
+  getUsersByEmail(email:string): Observable<User[]> {
+    return this.http.get<User[]>(`${this.host}/odkConnect/user/listUsersByRole/${email}`)
+  }
   getUsersById(id:number): Observable<User> {
     return this.http.get<User>(`${this.host}/odkConnect/user/findUserById/${id}`)
   }

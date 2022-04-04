@@ -1,6 +1,6 @@
 import { Log } from './../../model/Log';
 import { LogService } from './../../service/log.service';
-import { HttpErrorResponse } from '@angular/common/http';
+import {HttpErrorResponse } from '@angular/common/http';
 import { User } from './../../model/User';
 import { NotificationService } from './../../service/notification.service';
 import { AuthenticationService } from './../../service/authentication.service';
@@ -21,7 +21,7 @@ export class PageInscriptionComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
 
   constructor(private router: Router, private authenticationService: AuthenticationService,
-    private notificationService: NotificationService, private logService: LogService) { }
+              private notificationService: NotificationService, private logService:LogService) {}
 
   ngOnInit(): void {
     if (this.authenticationService.isUserloggedIn()) {
@@ -34,14 +34,15 @@ export class PageInscriptionComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.authenticationService.registerUser(user).subscribe(
         (response: User) => {
-          this.log.action = `creation de compte pour ${user.email}`;
+          this.log.action= `creation de compte pour ${response.login}`;
           this.log.tableName = audit.AJOUTER
-          this.log.createdBy = user;
-          this.logService.saveLog(this.log);
-          this.loading = false;
-          this.sendNotification(NotificationType.SUCCESS, `Un nouveau compte a été créé pour ${response.prenom}.
+          this.log.createdBy = response;                  
+          this.logService.saveLog(this.log).subscribe(
+            (audit: Log) => {
+              this.loading = false;
+              this.sendNotification(NotificationType.SUCCESS, `Un nouveau compte a été créé pour ${response.prenom}.
               Please vérifiez votre E-mail pour le mot de passe pour vous connecter.`);
-
+            });      
         },
         (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);

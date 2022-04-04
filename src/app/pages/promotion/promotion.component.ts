@@ -171,7 +171,7 @@ export class PromotionComponent implements OnInit, OnDestroy {
   }
   onEditPromo(editPromo: promotionModel){
     this.editPromo = editPromo;
-    // console.log(this.editPromo);    
+    console.log(this.editPromo);    
     this.clickButton('openPromoEdit')
   }
   onaddNewPromotion(promoForm: promotion) {
@@ -209,6 +209,7 @@ export class PromotionComponent implements OnInit, OnDestroy {
       )
     )
   }
+
   onGetpromoId(id: number) {
     this.idPromo = id;
     // console.log(this.idPromo);

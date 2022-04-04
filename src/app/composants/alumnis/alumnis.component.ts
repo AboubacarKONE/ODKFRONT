@@ -82,6 +82,7 @@ export class AlumnisComponent implements OnInit {
     this.clickButton('new-user-save');
   }
   public onAddNewAlum(userForm: NgForm): void {
+    this.refreshing = true;
     const formData = this.userService.createUserFormData(null, userForm.value, this.profileImage);
     this.subscriptions.push(
       this.userService.addAlumni(formData).subscribe(
@@ -95,6 +96,7 @@ export class AlumnisComponent implements OnInit {
         (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
           this.profileImage = null;
+          this.refreshing = false;
         }
       )
     )
@@ -113,6 +115,7 @@ export class AlumnisComponent implements OnInit {
               this.fileName = null;
               this.profileImage = null;
               this.sendNotification(NotificationType.SUCCESS, `${responseLignePromo.user.prenom} ${responseLignePromo.user.nom} ajout effectuer avec succès`)
+              this.refreshing = false;
             });
 
         },

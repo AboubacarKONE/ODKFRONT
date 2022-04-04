@@ -81,6 +81,9 @@ export class AuthenticationService {
   public get isAdminOrFormateur(): boolean {
     return this.isAdmin || this.isFormateur
   }
+  public get isAlumniOrFormateur(): boolean {
+    return this.getUserRole() === Role.ALUMNI || this.getUserRole() === Role.FORMATEUR;
+  }
   private getUserRole(): String {
     return this.getUserFromLocalCache().role;
   }

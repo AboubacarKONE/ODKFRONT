@@ -103,7 +103,7 @@ export class ExcelPromoComponent implements OnInit {
       this.data = <AOA>(
         XLSX.utils.sheet_to_json(ws, { header: 1, raw: false, range: 0 })
       );
-      console.log(this.data[1]);
+      // console.log(this.data[1]);
 
       this.headData = this.data[0];
       this.data = this.data.slice(1); // remove first header record
@@ -144,10 +144,11 @@ export class ExcelPromoComponent implements OnInit {
   // }
 
   annuler() {
+    // this.clickButton('p-dialog-header-close-icon')   
     window.location.reload();
     // 
   }
-
+ 
   ajoutFichier() {
     this.id = this.userservice.getIdAlumnis();
     for (let i = 0; i < this.datas.length; i++) {
@@ -196,5 +197,7 @@ export class ExcelPromoComponent implements OnInit {
     }
   }
 
-
+  private clickButton(buttonId: string): void {
+    document.getElementById(buttonId)?.click()
+  }
 }

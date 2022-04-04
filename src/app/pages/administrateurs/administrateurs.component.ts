@@ -146,6 +146,7 @@ export class AdministrateursComponent implements OnInit, OnDestroy {
               this.profileImage = null;
               userForm.reset();
               this.sendNotification(NotificationType.SUCCESS, `${response.prenom} ${response.nom} ajout effectuer avec succès`)
+              this.refreshing = false;
             }
           );
          

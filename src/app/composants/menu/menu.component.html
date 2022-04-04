@@ -1,9 +1,9 @@
 <div class="accordion" id="appMenuAccordion">
     <div class="card" *ngFor="let menu of menuProperties">
-      <div class="card-header" id="menu{{menu.id}}" style="background-color: #FF6600;">
+      <div class="card-header" id="menu{{menu.id}}" style="background-color: #FF6600;" [hidden]="menu.titre == 'Utilisateurs' && isAlumni">
         <h2 class="mb-0">
           <button class="btn btn-link btn-block text-left " type="button" data-toggle="collapse" style="color: black;"
-                  [attr.data-target]="'#collapse' + menu.id" aria-expanded="true" aria-controls="collapseOne">
+                  [attr.data-target]="'#collapse' + menu.id" aria-expanded="true" aria-controls="collapseOne" >
             <i class="{{menu.icon}}"></i>&nbsp;
             {{menu.titre}}
           </button>
@@ -15,7 +15,7 @@
         <div class="card">
           <ul class="list-group list-group-flush">
             <li class="list-group-item" *ngFor="let sousMenu of menu.sousMenu" style="background-color: #FF6600;" [ngClass]="{'text-white bg-dark': sousMenu.active, '': !sousMenu.active}">
-              <a href="javascript:void(0);" (click)="navigate(sousMenu)" style="color: inherit;">
+              <a href="javascript:void(0);" (click)="navigate(sousMenu)" style="color: inherit;" [hidden]="sousMenu.titre == 'Reset mot de passe' && isAlumniOrFormateur">
                 <i class="{{sousMenu.icon}}"></i>&nbsp;
                 {{sousMenu.titre}}
               </a>

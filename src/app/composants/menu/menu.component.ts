@@ -1,3 +1,5 @@
+import { User } from 'src/app/model/User';
+import { AuthenticationService } from './../../service/authentication.service';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Menu } from './menu';
@@ -107,9 +109,14 @@ export class MenuComponent implements OnInit {
     }
   ];
 private lastSelectedMenu: Menu | undefined;
-  constructor(private router:Router) { }
+public isAlumni:boolean;
+public isAlumniOrFormateur:boolean; 
+  constructor(private router:Router, private authenticationService:AuthenticationService) { }
 
   ngOnInit(): void {
+    this.isAlumni = this.authenticationService.isAlumni;
+    this.isAlumniOrFormateur = this.authenticationService.isAlumniOrFormateur;
+
   }
   navigate(menu: Menu): void {
     if (this.lastSelectedMenu) {

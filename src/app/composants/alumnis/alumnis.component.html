@@ -241,7 +241,12 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-danger" data-dismiss="modal" id="new-user-close">Fermer</button>
-          <button type="button" (click)="saveNewUser()" [disabled]="newUserForm.invalid" class="btn btn-dark">Enregistrer</button>
+          <button type="button" (click)="saveNewUser()" [disabled]="newUserForm.invalid || refreshing" class="btn btn-dark">
+            <i *ngIf="refreshing" class="fas fa-spinner fa-spin"></i>
+            <span *ngIf="refreshing">Loading...</span>
+            <span *ngIf="!refreshing"><i class="fas fa-check"></i>&nbsp;enregistrer</span>
+          </button>
+          <!-- <button type="button" (click)="saveNewUser()" [disabled]="newUserForm.invalid" class="btn btn-dark">Enregistrer</button> -->
         </div>
       </div>
     </div>

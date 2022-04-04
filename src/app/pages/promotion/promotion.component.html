@@ -138,7 +138,7 @@
               <input type="text" class="form-control" placeholder="chercher un formateur" [(ngModel)]="search">
               <div class="autocomplete shadow p-3 mb-5 bg-white rounded" *ngIf="search">
                 <p class="p-1" *ngFor="let form of Formateur | filter:search" (click)="AffecterFormateur(form)">
-                  {{form.prenom}} &nbsp;&nbsp;{{form.nom}}&nbsp;&nbsp; {{form.login}}&nbsp;&nbsp;{{form.email}} 
+                  {{form.prenom}}&nbsp;{{form.login}}&nbsp;{{form.email}} 
 
                   <!-- <button type="button" class="btn-sm btn-info blue-color"  (click)="selectFormateurClick(form)"><i class="fas fa-plus"></i></button> -->
                 </p>
@@ -282,7 +282,7 @@
                       </div>
                       <div class="form-group">
                         <label for="dateDebut">Date debut</label>
-                        <input type="date" name="dateDebut" [(ngModel)]="editPromo.dateDebut" class="form-control">
+                        <input type="date" name="dateDebut"  [(ngModel)]="editPromo.dateDebut " class="form-control">
                       </div>
                       <div class="form-group">
                         <label for="datefin">Date fin</label>
